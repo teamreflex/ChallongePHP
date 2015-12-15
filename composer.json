@@ -1,0 +1,19 @@
+{
+    "name": "team-reflex/challonge-php",
+    "description": "Unofficial API to interface with the bracket generator Challonge.",
+    "require": {
+        "guzzlehttp/guzzle": "^5.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kyle Ward",
+            "email": "kairu@team-reflex.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Reflex\\Challonge\\": "src/Challonge"
+        }
+    }
+}
