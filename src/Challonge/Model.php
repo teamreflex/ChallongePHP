@@ -4,7 +4,12 @@ namespace Reflex\Challonge;
 
 class Model
 {
-    public function __construct($params = array())
+    /**
+     * Dynamically get and set instance variables from the response.
+     *
+     * @param array $params
+     */
+    public function __construct($params = [])
     {
         foreach ($params as $key=>$value) {
             $this->{$key} = $value;

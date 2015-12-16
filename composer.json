@@ -2,7 +2,7 @@
     "name": "team-reflex/challonge-php",
     "description": "Unofficial API to interface with the bracket generator Challonge.",
     "require": {
-        "guzzlehttp/guzzle": "^5.0"
+        "guzzlehttp/guzzle": "^6.0"
     },
     "license": "MIT",
     "authors": [

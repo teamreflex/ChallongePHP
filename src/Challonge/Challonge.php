@@ -21,12 +21,14 @@ class Challonge
 
     /**
      * Challonge API key.
+     *
      * @var string
      */
     private $api_key;
 
     /**
      * Instantiate an instance with the API key.
+     *
      * @param string $api_key
      */
     public function __construct($api_key = '')
@@ -36,6 +38,7 @@ class Challonge
 
     /**
      * Build any headers the requests need.
+     *
      * @return array
      */
     private function buildHeaders()
@@ -47,10 +50,11 @@ class Challonge
 
     /**
      * Base function for all API requests.
+     *
      * @param  string $path
      * @param  array  $params
      * @param  string $method
-     * @return Response
+     * @return GuzzleHttp\Psr7\Response
      */
     private function makeCall($path, $params = [], $method = 'get')
     {
@@ -61,27 +65,28 @@ class Challonge
         $base_uri = "https://api.challonge.com/v1/{$path}.json";
         $client = new Client();
 
-        $request = $client->createRequest($method, $base_uri, [
+        $response = $client->request($method, $base_uri, [
+            'query' => [
+                'api_key' => $this->api_key,
+            ],
             'headers' => $this->buildHeaders(),
-            'exceptions' => false,
+            'http_errors' => false,
         ]);
-
-        $query = $request->getQuery();
-        $query->set('api_key', $this->api_key);
-
-        $response = $client->send($request);
 
         return $this->handleErrors($response);
     }
 
     /**
      * Handles the response and throws errors accordingly.
+     *
+     * @param $response GuzzleHttp\Psr7\Response
+     * @return stdClass
      */
     private function handleErrors($response)
     {
         switch ($response->getStatusCode()) {
             case 200:
-                return $response->json();
+                return json_decode($response->getBody());
                 break;
             case 401:
                 throw new UnauthorizedException('Unauthorized (Invalid API key or insufficient permissions)');
@@ -99,7 +104,7 @@ class Challonge
                 throw new ServerException('Something went wrong on Challonge\'s end');
                 break;
             default:
-                $errors = $response->json()['errors'];
+                $errors = json_decode($response->getBody())->errors;
                 throw new UnexpectedErrorException($errors);
                 break;
         }
@@ -107,6 +112,7 @@ class Challonge
 
     /**
      * Retrieve a set of tournaments created with your account.
+     *
      * @return array
      */
     public function getTournaments() {
@@ -114,7 +120,7 @@ class Challonge
 
         $tournaments = [];
         foreach ($response as $tourney) {
-            $tournaments[] = new Tournament($tourney['tournament']);
+            $tournaments[] = new Tournament($tourney->tournament);
         }
 
         return $tournaments;
@@ -122,17 +128,19 @@ class Challonge
 
     /**
      * Retrieve a single tournament record created with your account.
+     *
      * @param  string $tournament
      * @return Tournament
      */
     public function getTournament($tournament)
     {
         $response = $this->makeCall("tournaments/{$tournament}");
-        return new Tournament($response['tournament']);
+        return new Tournament($response->tournament);
     }
 
     /**
      * Retrieve a tournament's participant list.
+     *
      * @param  string $tournament
      * @return array
      */
@@ -142,7 +150,7 @@ class Challonge
 
         $participants = [];
         foreach ($response as $team) {
-            $participants[] = new Participant($team['participant']);
+            $participants[] = new Participant($team->participant);
         }
 
         return $participants;
@@ -150,6 +158,7 @@ class Challonge
 
     /**
      * Retrieve a single participant record for a tournament.
+     *
      * @param  string $tournament
      * @param  string $participant
      * @return array
@@ -158,13 +167,14 @@ class Challonge
     {
         $response = $this->makeCall("tournaments/{$tournament}/participants/{$participant}");
 
-        $participant = new Participant($response['participant']);
+        $participant = new Participant($response->participant);
 
         return $participant;
     }
 
     /**
      * Retrieve a tournament's match list.
+     *
      * @param  string $tournament
      * @return array
      */
@@ -174,7 +184,7 @@ class Challonge
 
         $matches = [];
         foreach ($response as $match) {
-            $matches[] = new Match($match['match']);
+            $matches[] = new Match($match->match);
         }
 
         return $matches;
@@ -182,6 +192,7 @@ class Challonge
 
     /**
      * Retrieve a single match record for a tournament.
+     *
      * @param  string $tournament
      * @param  string $match
      * @return array
@@ -190,7 +201,7 @@ class Challonge
     {
         $response = $this->makeCall("tournaments/{$tournament}/matches/{$match}");
 
-        $match = new Match($response['match']);
+        $match = new Match($response->match);
 
         return $match;
     }
