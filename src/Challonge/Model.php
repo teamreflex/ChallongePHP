@@ -11,8 +11,15 @@ class Model
      */
     public function __construct($params = [])
     {
+        $this->updateModel($params);
+    }
+
+    public function updateModel($params = [])
+    {
         foreach ($params as $key=>$value) {
             $this->{$key} = $value;
         }
+
+        return $this;
     }
 }
