@@ -2,15 +2,10 @@
 
 namespace Reflex\Challonge;
 
-use GuzzleHttp\Client;
 use Reflex\Challonge\Models\Match;
+use Reflex\Challonge\Helpers\Guzzle;
 use Reflex\Challonge\Models\Tournament;
 use Reflex\Challonge\Models\Participant;
-use Reflex\Challonge\Exceptions\ServerException;
-use Reflex\Challonge\Exceptions\NotFoundException;
-use Reflex\Challonge\Exceptions\ValidationException;
-use Reflex\Challonge\Exceptions\UnauthorizedException;
-use Reflex\Challonge\Exceptions\InvalidFormatException;
 
 class Challonge
 {
@@ -20,94 +15,14 @@ class Challonge
     const VERSION = '1.0';
 
     /**
-     * Challonge API key.
-     *
-     * @var string
-     */
-    private $api_key;
-
-    /**
      * Instantiate an instance with the API key.
      *
      * @param string $api_key
      */
     public function __construct($api_key = '')
     {
-        $this->api_key = $api_key;
-    }
-
-    /**
-     * Build any headers the requests need.
-     *
-     * @return array
-     */
-    private function buildHeaders()
-    {
-        return [
-            'User-Agent' => 'ChallongePHP/' . self::VERSION . ' ChallongePHP (https://github.com/teamreflex/ChallongePHP, ' . self::VERSION . ')'
-        ];
-    }
-
-    /**
-     * Base function for all API requests.
-     *
-     * @param  string $path
-     * @param  array  $params
-     * @param  string $method
-     * @return GuzzleHttp\Psr7\Response
-     */
-    private function makeCall($path, $params = [], $method = 'get')
-    {
-        if (empty($this->api_key)) {
-            throw new UnauthorizedException('Must set an API key.');
-        }
-
-        $base_uri = "https://api.challonge.com/v1/{$path}.json";
-        $client = new Client();
-
-        $response = $client->request($method, $base_uri, [
-            'query' => [
-                'api_key' => $this->api_key,
-            ],
-            'headers' => $this->buildHeaders(),
-            'http_errors' => false,
-        ]);
-
-        return $this->handleErrors($response);
-    }
-
-    /**
-     * Handles the response and throws errors accordingly.
-     *
-     * @param $response GuzzleHttp\Psr7\Response
-     * @return stdClass
-     */
-    private function handleErrors($response)
-    {
-        switch ($response->getStatusCode()) {
-            case 200:
-                return json_decode($response->getBody());
-                break;
-            case 401:
-                throw new UnauthorizedException('Unauthorized (Invalid API key or insufficient permissions)');
-                break;
-            case 404:
-                throw new NotFoundException('Object not found within your account scope');
-                break;
-            case 406:
-                throw new InvalidFormatException('Requested format is not supported - request JSON or XML only');
-                break;
-            case 422:
-                throw new ValidationException('Validation error(s) for create or update method');
-                break;
-            case 500:
-                throw new ServerException('Something went wrong on Challonge\'s end');
-                break;
-            default:
-                $errors = json_decode($response->getBody())->errors;
-                throw new UnexpectedErrorException($errors);
-                break;
-        }
+        @define("CHALLONGE_VERSION", self::VERSION);
+        @define("CHALLONGE_KEY", $api_key);
     }
 
     /**
@@ -116,7 +31,7 @@ class Challonge
      * @return array
      */
     public function getTournaments() {
-        $response = $this->makeCall('tournaments');
+        $response = Guzzle::get('tournaments');
 
         $tournaments = [];
         foreach ($response as $tourney) {
@@ -134,7 +49,7 @@ class Challonge
      */
     public function getTournament($tournament)
     {
-        $response = $this->makeCall("tournaments/{$tournament}");
+        $response = Guzzle::get("tournaments/{$tournament}");
         return new Tournament($response->tournament);
     }
 
@@ -146,7 +61,7 @@ class Challonge
      */
     public function getParticipants($tournament)
     {
-        $response = $this->makeCall("tournaments/{$tournament}/participants");
+        $response = Guzzle::get("tournaments/{$tournament}/participants");
 
         $participants = [];
         foreach ($response as $team) {
@@ -165,7 +80,7 @@ class Challonge
      */
     public function getParticipant($tournament, $participant)
     {
-        $response = $this->makeCall("tournaments/{$tournament}/participants/{$participant}");
+        $response = Guzzle::get("tournaments/{$tournament}/participants/{$participant}");
 
         $participant = new Participant($response->participant);
 
@@ -180,7 +95,7 @@ class Challonge
      */
     public function getMatches($tournament)
     {
-        $response = $this->makeCall("tournaments/{$tournament}/matches");
+        $response = Guzzle::get("tournaments/{$tournament}/matches");
 
         $matches = [];
         foreach ($response as $match) {
@@ -199,7 +114,7 @@ class Challonge
      */
     public function getMatch($tournament, $match)
     {
-        $response = $this->makeCall("tournaments/{$tournament}/matches/{$match}");
+        $response = Guzzle::get("tournaments/{$tournament}/matches/{$match}");
 
         $match = new Match($response->match);
 
