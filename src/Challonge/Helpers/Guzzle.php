@@ -22,21 +22,25 @@ class Guzzle
     public static function __callStatic($name, $params)
     {
         $path = $params[0];
-        $parameters = @$params[1];
+        $content = @$params[1];
+
+        if (is_null($content)) {
+            $content = [];
+        }
 
         if (empty(CHALLONGE_KEY)) {
             throw new UnauthorizedException('Must set an API key.');
         }
 
+        $content['api_key'] = CHALLONGE_KEY;
+
         $base_uri = "https://api.challonge.com/v1/{$path}.json";
         $client = new Client();
 
         $response = $client->request($name, $base_uri, [
-            'query' => [
-                'api_key' => CHALLONGE_KEY,
-            ],
-            'headers' => self::buildHeaders(),
-            'http_errors' => false,
+            'query'         => $content,
+            'headers'       => self::buildHeaders(),
+            'http_errors'   => false,
         ]);
 
         return self::handleErrors($response);
