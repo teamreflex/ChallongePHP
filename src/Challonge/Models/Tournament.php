@@ -52,7 +52,7 @@ class Tournament extends Model
     }
 
     /**
-     *  Update a tournament's attributes.
+     * Update a tournament's attributes.
      *
      * @param  array $params
      * @return Tournament
@@ -82,7 +82,11 @@ class Tournament extends Model
     public function addParticipant($params = [])
     {
         $response = Guzzle::post("tournaments/{$this->id}/participants", $params);
-        return new Participant($response->participant);
+
+        $participant = new Participant($response->participant);
+        $participant->tournament_slug = $this->id;
+
+        return $participant;
     }
 
     /**
@@ -97,7 +101,9 @@ class Tournament extends Model
 
         $participants = [];
         foreach ($response->participant as $participant) {
-            $participants = new Participant($participant);
+            $participant = new Participant($participant);
+            $participant->tournament_slug = $tournament;
+            $participants[] = $participant;
         }
 
         return $participants;

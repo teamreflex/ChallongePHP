@@ -42,6 +42,18 @@ class Challonge
     }
 
     /**
+     * Create a new tournament.
+     *
+     * @param  array $params
+     * @return Tournament
+     */
+    public function createTournament($params)
+    {
+        $response = Guzzle::post("tournaments");
+        return new Tournament($response->tournament);
+    }
+
+    /**
      * Retrieve a single tournament record created with your account.
      *
      * @param  string $tournament
@@ -65,7 +77,29 @@ class Challonge
 
         $participants = [];
         foreach ($response as $team) {
-            $participants[] = new Participant($team->participant);
+            $participant = new Participant($team->participant);
+            $participant->tournament_slug = $tournament;
+            $participants[] = $participant;
+        }
+
+        return $participants;
+    }
+
+    /**
+     * Randomize seeds among participants.
+     *
+     * @param  string $tournament
+     * @return array
+     */
+    public function randomizeParticipants($tournament)
+    {
+        $response = Guzzle::post("tournaments/{$tournament}/participants/randomize");
+
+        $participants = [];
+        foreach ($response as $team) {
+            $participant = new Participant($team->participant);
+            $participant->tournament_slug = $tournament;
+            $participants[] = $participant;
         }
 
         return $participants;
@@ -83,6 +117,7 @@ class Challonge
         $response = Guzzle::get("tournaments/{$tournament}/participants/{$participant}");
 
         $participant = new Participant($response->participant);
+        $participant->tournament_slug = $tournament;
 
         return $participant;
     }
@@ -99,7 +134,9 @@ class Challonge
 
         $matches = [];
         foreach ($response as $match) {
-            $matches[] = new Match($match->match);
+            $matchModel = new Match($match->match);
+            $matchModel->tournament_slug = $tournament;
+            $matches[] = $matchModel;
         }
 
         return $matches;
@@ -117,6 +154,7 @@ class Challonge
         $response = Guzzle::get("tournaments/{$tournament}/matches/{$match}");
 
         $match = new Match($response->match);
+        $match->tournament_slug = $tournament;
 
         return $match;
     }
