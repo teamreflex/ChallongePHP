@@ -49,7 +49,7 @@ class Challonge
      */
     public function createTournament($params)
     {
-        $response = Guzzle::post("tournaments");
+        $response = Guzzle::post("tournaments", $params);
         return new Tournament($response->tournament);
     }
 

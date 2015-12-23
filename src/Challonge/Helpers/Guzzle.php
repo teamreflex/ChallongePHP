@@ -23,6 +23,7 @@ class Guzzle
     {
         $path = $params[0];
         $content = @$params[1];
+        $query['api_key'] = CHALLONGE_KEY;
 
         if (is_null($content)) {
             $content = [];
@@ -32,13 +33,12 @@ class Guzzle
             throw new UnauthorizedException('Must set an API key.');
         }
 
-        $content['api_key'] = CHALLONGE_KEY;
-
         $base_uri = "https://api.challonge.com/v1/{$path}.json";
         $client = new Client();
 
         $response = $client->request($name, $base_uri, [
-            'query'         => $content,
+            'query'         => $query,
+            'form_params'   => $content,
             'headers'       => self::buildHeaders(),
             'http_errors'   => false,
         ]);
