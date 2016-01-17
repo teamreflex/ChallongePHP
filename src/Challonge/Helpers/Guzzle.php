@@ -86,8 +86,8 @@ class Guzzle
                 throw new ServerException('Something went wrong on Challonge\'s end');
                 break;
             default:
-                $errors = json_decode($response->getBody())->errors;
-                throw new UnexpectedErrorException($errors);
+                $decodedResponse = json_decode($response->getBody());
+                throw new UnexpectedErrorException($decodedResponse);
                 break;
         }
     }

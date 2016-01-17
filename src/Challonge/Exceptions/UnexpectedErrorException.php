@@ -4,11 +4,11 @@ namespace Reflex\Challonge\Exceptions;
 
 class UnexpectedErrorException extends \Exception
 {
-    public $errors;
+    public $response;
 
-    public function __construct($errors)
+    public function __construct($response)
     {
-        $this->errors = $errors;
+        $this->response = $response;
     }
 
 }
