@@ -1,7 +1,7 @@
 # ChallongePHP
 Package for interfacing with the [Challonge] API.
 
-Currently a work in progress.
+You can find basic documentation in the wiki: https://github.com/teamreflex/ChallongePHP/wiki
 
 - [team-reflex.com](https://team-reflex.com)
 - [@Reflexgg](http://twitter.com/Reflexgg)
