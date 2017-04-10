@@ -41,6 +41,7 @@ class Guzzle
             'form_params'   => $content,
             'headers'       => self::buildHeaders(),
             'http_errors'   => false,
+            'verify'        => CHALLONGE_SSL,
         ]);
 
         return self::handleErrors($response);

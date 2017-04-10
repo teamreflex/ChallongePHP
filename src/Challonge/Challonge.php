@@ -19,10 +19,23 @@ class Challonge
      *
      * @param string $api_key
      */
-    public function __construct($api_key = '')
+    public function __construct($api_key = '', $verifySsl = true)
     {
         @define("CHALLONGE_VERSION", self::VERSION);
         @define("CHALLONGE_KEY", $api_key);
+        @define("CHALLONGE_SSL", $verifySsl);
+    }
+
+    /**
+     * Set whether we want to verify the SSL certificate.
+     *
+     * @param  boolean $verifySsl
+     * @return $this
+     */
+    public function setSsl($verifySsl)
+    {
+        @define("CHALLONGE_SSL", $verifySsl);
+        return $this;
     }
 
     /**
