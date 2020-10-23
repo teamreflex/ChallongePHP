@@ -2,7 +2,15 @@
     "name": "team-reflex/challonge-php",
     "description": "Unofficial API to interface with the bracket generator Challonge.",
     "require": {
-        "guzzlehttp/guzzle": "^6.0"
+        "php": "^7.4",
+        "psr/http-client": "^1.0",
+        "ext-json": "*",
+        "illuminate/collections": "^8.11",
+        "spatie/data-transfer-object": "^2.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.4",
+        "guzzlehttp/guzzle": "^7.2"
     },
     "license": "MIT",
     "authors": [
@@ -13,7 +21,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "Reflex\\Challonge\\": "src/Challonge"
+            "Reflex\\Challonge\\": "src/Challonge",
+            "Tests\\": "tests"
         }
     }
 }

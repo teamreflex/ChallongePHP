@@ -1,6 +1,6 @@
 <?php
 
-namespace Reflex\Challonge\Models;
+namespace Reflex\Challonge\DTO;
 
 use Reflex\Challonge\Model;
 
