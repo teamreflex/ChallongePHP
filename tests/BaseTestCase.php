@@ -16,14 +16,14 @@ class BaseTestCase extends TestCase
     {
         $this->mockHandler = new MockHandler();
 
-        // real
-        //$http = new Client();
         // mocking
         $http = new Client([
             'handler' => $this->mockHandler,
         ]);
+        // real
+        //$http = new Client();
 
-        $this->challonge = new Challonge($http, 'aafRwAi7PsS7ruJWvq8G1mL0myucjQNNOj7cTwZO');
+        $this->challonge = new Challonge($http, '');
 
         parent::setUp();
     }

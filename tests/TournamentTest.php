@@ -21,15 +21,15 @@ class TournamentTest extends BaseTestCase
 
         $response = $this->challonge->createTournament();
 
-        $this->assertEquals('Sample Tournament 1', $response->name);
+        $this->assertEquals('challongephp test', $response->name);
     }
 
     public function test_tournament_fetch(): void
     {
         $this->mockHandler->append(new Response(200, [], file_get_contents(__DIR__ . '/stubs/tournament_fetch.json')));
 
-        $response = $this->challonge->fetchTournament('sample_tournament_1');
+        $response = $this->challonge->fetchTournament('9044420');
 
-        $this->assertEquals('Sample Tournament 1', $response->name);
+        $this->assertEquals('challongephp test', $response->name);
     }
 }

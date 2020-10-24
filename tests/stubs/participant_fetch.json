@@ -1,0 +1,42 @@
+{
+    "participant":{
+        "id":132810231,
+        "tournament_id":9044420,
+        "name":"Team 1",
+        "seed":1,
+        "active":true,
+        "created_at":"2020-10-25T00:45:17.644+13:00",
+        "updated_at":"2020-10-25T00:45:17.644+13:00",
+        "invite_email":null,
+        "final_rank":null,
+        "misc":null,
+        "icon":null,
+        "on_waiting_list":false,
+        "invitation_id":null,
+        "group_id":null,
+        "checked_in_at":null,
+        "ranked_member_id":null,
+        "custom_field_response":null,
+        "clinch":null,
+        "integration_uids":null,
+        "challonge_username":null,
+        "challonge_email_address_verified":null,
+        "removable":true,
+        "participatable_or_invitation_attached":false,
+        "confirm_remove":true,
+        "invitation_pending":false,
+        "display_name_with_invitation_email_address":"Team 1",
+        "email_hash":null,
+        "username":null,
+        "display_name":"Team 1",
+        "attached_participatable_portrait_url":null,
+        "can_check_in":false,
+        "checked_in":false,
+        "reactivatable":false,
+        "check_in_open":false,
+        "group_player_ids":[
+
+        ],
+        "has_irrelevant_seed":false
+    }
+}

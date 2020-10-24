@@ -1,10 +1,10 @@
 {
     "name": "team-reflex/challonge-php",
-    "description": "Unofficial API to interface with the bracket generator Challonge.",
+    "description": "PSR-18 compatible library to interface with the bracket generator Challonge.",
     "require": {
+        "ext-json": "*",
         "php": "^7.4",
         "psr/http-client": "^1.0",
-        "ext-json": "*",
         "illuminate/collections": "^8.11",
         "spatie/data-transfer-object": "^2.5"
     },

@@ -2,6 +2,7 @@
 
 namespace Reflex\Challonge\DTO;
 
+use Illuminate\Support\Collection;
 use Reflex\Challonge\DtoClientTrait;
 use Reflex\Challonge\Exceptions\StillRunningException;
 use Reflex\Challonge\Exceptions\AlreadyStartedException;
@@ -11,61 +12,83 @@ class Tournament extends DataTransferObject
 {
     use DtoClientTrait;
 
-    public bool $accept_attachments;
-    public bool $allow_participant_match_reporting;
-    public bool $anonymous_voting;
-    public ?int $category;
-    public ?int $check_in_duration;
+    public int $id;
+    public string $name;
+    public string $url;
+    public string $description;
+    public string $tournament_type;
+    public ?string $started_at;
     public ?string $completed_at;
-    public ?string $created_at;
+    public bool $require_score_agreement;
+    public bool $notify_users_when_matches_open;
+    public string $created_at;
+    public string $updated_at;
+    public string $state;
+    public bool $open_signup;
+    public bool $notify_users_when_the_tournament_ends;
+    public int $progress_meter;
+    public bool $quick_advance;
+    public bool $hold_third_place_match;
+    public string $pts_for_game_win;
+    public string $pts_for_game_tie;
+    public string $pts_for_match_win;
+    public string $pts_for_match_tie;
+    public string $pts_for_bye;
+    public int $swiss_rounds;
+    public bool $private;
+    public ?string $ranked_by;
+    public bool $show_rounds;
+    public bool $hide_forum;
+    public bool $sequential_pairings;
+    public bool $accept_attachments;
+    public string $rr_pts_for_game_win;
+    public string $rr_pts_for_game_tie;
+    public string $rr_pts_for_match_win;
+    public string $rr_pts_for_match_tie;
     public bool $created_by_api;
     public bool $credit_capped;
-    public string $description;
-    public ?int $game_id;
-    public bool $group_stages_enabled;
-    public bool $hide_forum;
+    public ?int $category;
     public bool $hide_seeds;
-    public bool $hold_third_place_match;
-    public int $id;
-    public int $max_predictions_per_user;
-    public string $name;
-    public bool $notify_users_when_matches_open;
-    public bool $notify_users_when_the_tournament_ends;
-    public bool $open_signup;
-    public int $participants_count;
     public int $prediction_method;
     public ?string $predictions_opened_at;
-    public bool $private;
-    public int $progress_meter;
-    public string $pts_for_bye;
-    public string $pts_for_game_tie;
-    public string $pts_for_game_win;
-    public string $pts_for_match_tie;
-    public string $pts_for_match_win;
-    public bool $quick_advance;
-    public string $ranked_by;
-    public bool $require_score_agreement;
-    public string $rr_pts_for_game_tie;
-    public string $rr_pts_for_game_win;
-    public string $rr_pts_for_match_tie;
-    public string $rr_pts_for_match_win;
-    public bool $sequential_pairings;
-    public bool $show_rounds;
+    public bool $anonymous_voting;
+    public int $max_predictions_per_user;
     public ?int $signup_cap;
+    public ?int $game_id;
+    public int $participants_count;
+    public bool $group_stages_enabled;
+    public bool $allow_participant_match_reporting;
+    public  $teams;
+    public $check_in_duration;
     public ?string $start_at;
-    public ?string $started_at;
     public ?string $started_checking_in_at;
-    public string $state;
-    public int $swiss_rounds;
-    public bool $teams;
-    public array $tie_breaks;
-    public string $tournament_type;
-    public ?string $updated_at;
-    public string $url;
-    public ?string $description_source;
+    public $tie_breaks;
+    public ?string $locked_at;
+    public ?int $event_id;
+    public ?bool $public_predictions_before_start_time;
+    public $ranked;
+    public ?string $grand_finals_modifier;
+    public $predict_the_losers_bracket;
+    public $spam;
+    public $ham;
+    public ?int $rr_iterations;
+    public ?int $tournament_registration_id;
+    public ?bool $donation_contest_enabled;
+    public ?bool $mandatory_donation;
+    public $non_elimination_tournament_data;
+    public ?bool $auto_assign_stations;
+    public ?bool $only_start_matches_with_stations;
+    public string $registration_fee;
+    public string $registration_type;
+    public bool $split_participants;
+    public ?array $allowed_regions;
+    public ?bool $show_participant_country;
+    public ?int $program_id;
+    public $program_classification_ids_allowed;
+    public string $description_source;
     public ?string $subdomain;
-    public ?string $full_challonge_url;
-    public ?string $live_image_url;
+    public string $full_challonge_url;
+    public string $live_image_url;
     public ?string $sign_up_url;
     public bool $review_before_finalizing;
     public bool $accepting_predictions;
@@ -174,36 +197,38 @@ class Tournament extends DataTransferObject
 
     /**
      * Add a participant to a tournament (up until it is started).
-     *
-     * @param array $params
+     * @param array $options
+     * @return Participant
+     * @throws \JsonException
+     * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
+     * @throws \Reflex\Challonge\Exceptions\NotFoundException
+     * @throws \Reflex\Challonge\Exceptions\ServerException
+     * @throws \Reflex\Challonge\Exceptions\UnauthorizedException
+     * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
+     * @throws \Reflex\Challonge\Exceptions\ValidationException
      */
-    public function addParticipant($params = [])
+    public function addParticipant(array $options = []): Participant
     {
-        $response = Guzzle::post("tournaments/{$this->id}/participants", $params);
-
-        $participant = new Participant($response->participant);
-        $participant->tournament_slug = $this->id;
-
-        return $participant;
+        $response = $this->client->request('post', "tournaments/{$this->id}/participants", $options);
+        return Participant::fromResponse($this->client, $response['participant']);
     }
 
     /**
      * Bulk add participants to a tournament (up until it is started).
-     *
-     * @param  array $params
-     * @return array
+     * @param array $options
+     * @return Collection
+     * @throws \JsonException
+     * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
+     * @throws \Reflex\Challonge\Exceptions\NotFoundException
+     * @throws \Reflex\Challonge\Exceptions\ServerException
+     * @throws \Reflex\Challonge\Exceptions\UnauthorizedException
+     * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
+     * @throws \Reflex\Challonge\Exceptions\ValidationException
      */
-    public function bulkAddParticipant($params = [])
+    public function bulkAddParticipant(array $options = []): Collection
     {
-        $response = Guzzle::post("tournaments/{$this->id}/participants/bulk_add", $params);
-
-        $participants = [];
-        foreach ($response->participant as $participant) {
-            $participant = new Participant($participant);
-            $participant->tournament_slug = $tournament;
-            $participants[] = $participant;
-        }
-
-        return $participants;
+        $response = $this->client->request('post', "tournaments/{$this->id}/participants/bulk_add", $options);
+        return Collection::make($response)
+            ->map(fn (array $participant) => Participant::fromResponse($this->client, $participant['participant']));
     }
 }

@@ -5,7 +5,6 @@ namespace Reflex\Challonge;
 use Illuminate\Support\Collection;
 use Psr\Http\Client\ClientInterface;
 use Reflex\Challonge\DTO\Match;
-use Reflex\Challonge\Helpers\Guzzle;
 use Reflex\Challonge\DTO\Tournament;
 use Reflex\Challonge\DTO\Participant;
 
@@ -96,95 +95,96 @@ class Challonge
 
     /**
      * Retrieve a tournament's participant list.
-     *
-     * @param  string $tournament
-     * @return array
+     * @param string $tournament
+     * @return Collection
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
-    public function getParticipants($tournament)
+    public function getParticipants(string $tournament): Collection
     {
-        $response = Guzzle::get("tournaments/{$tournament}/participants");
-
-        $participants = [];
-        foreach ($response as $team) {
-            $participant = new Participant($team->participant);
-            $participant->tournament_slug = $tournament;
-            $participants[] = $participant;
-        }
-
-        return $participants;
+        $response = $this->client->request('get', "tournaments/{$tournament}/participants");
+        return Collection::make($response)
+            ->map(fn (array $participant) => Participant::fromResponse($this->client, $participant['participant']));
     }
 
     /**
      * Randomize seeds among participants.
-     *
-     * @param  string $tournament
-     * @return array
+     * @param string $tournament
+     * @return Collection
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
-    public function randomizeParticipants($tournament)
+    public function randomizeParticipants(string $tournament): Collection
     {
-        $response = Guzzle::post("tournaments/{$tournament}/participants/randomize");
-
-        $participants = [];
-        foreach ($response as $team) {
-            $participant = new Participant($team->participant);
-            $participant->tournament_slug = $tournament;
-            $participants[] = $participant;
-        }
-
-        return $participants;
+        $response = $this->client->request('post', "tournaments/{$tournament}/participants/randomize");
+        return Collection::make($response)
+            ->map(fn (array $participant) => Participant::fromResponse($this->client, $participant['participant']));
     }
 
     /**
      * Retrieve a single participant record for a tournament.
-     *
-     * @param  string $tournament
-     * @param  string $participant
-     * @return array
+     * @param string $tournament
+     * @param int $participant
+     * @return Participant
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
-    public function getParticipant($tournament, $participant)
+    public function getParticipant(string $tournament, int $participant): Participant
     {
-        $response = Guzzle::get("tournaments/{$tournament}/participants/{$participant}");
-
-        $participant = new Participant($response->participant);
-        $participant->tournament_slug = $tournament;
-
-        return $participant;
+        $response = $this->client->request('post', "tournaments/{$tournament}/participants/{$participant}");
+        return Participant::fromResponse($this->client, $response['participant']);
     }
 
     /**
      * Retrieve a tournament's match list.
-     *
-     * @param  string $tournament
-     * @return array
+     * @param string $tournament
+     * @return Collection
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
-    public function getMatches($tournament)
+    public function getMatches(string $tournament): Collection
     {
-        $response = Guzzle::get("tournaments/{$tournament}/matches");
-
-        $matches = [];
-        foreach ($response as $match) {
-            $matchModel = new Match($match->match);
-            $matchModel->tournament_slug = $tournament;
-            $matches[] = $matchModel;
-        }
-
-        return $matches;
+        $response = $this->client->request('get', "tournaments/{$tournament}/matches");
+        return Collection::make($response)
+            ->map(fn (array $match) => Match::fromResponse($this->client, $match['match']));
     }
 
     /**
      * Retrieve a single match record for a tournament.
-     *
-     * @param  string $tournament
-     * @param  string $match
-     * @return array
+     * @param string $tournament
+     * @param int $match
+     * @return Match
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
-    public function getMatch($tournament, $match)
+    public function getMatch(string $tournament, int $match): Match
     {
-        $response = Guzzle::get("tournaments/{$tournament}/matches/{$match}");
-
-        $match = new Match($response->match);
-        $match->tournament_slug = $tournament;
-
-        return $match;
+        $response = $this->client->request('get', "tournaments/{$tournament}/matches/{$match}");
+        return Match::fromResponse($this->client, $response['match']);
     }
 }
