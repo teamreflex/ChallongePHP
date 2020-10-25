@@ -22,8 +22,26 @@ You can use a client such as Guzzle, and pass an instance of it when instantiati
 
 ```bash
 $http = new GuzzleHttp\Client();
-$challonge = new Challonge($http, 'api_key_here');
+$challonge = new Challonge($http, 'api_key_here', true);
 ```
+
+By default, the package maps the keys of any input, as Challonge requires its input to be in a format such as:
+
+```bash
+$tournament = $challonge->createTournament([
+    'tournament[name]' => 'test'
+]);
+```
+
+Which means you are able to use the package without prefixing your keys:
+
+```bash
+$tournament = $challonge->createTournament([
+    'name' => 'test'
+]);
+```
+
+You can change the third argument to `false` to disable this mapping if you would prefer to do it yourself.
 
 Now you're ready to make requests:
 
