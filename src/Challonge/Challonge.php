@@ -94,6 +94,24 @@ class Challonge
     }
 
     /**
+     * Delete a tournament and all it's records.
+     * @param string $tournament
+     * @return Tournament
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
+     */
+    public function deleteTournament(string $tournament): Tournament
+    {
+        $response = $this->client->request('delete', "tournaments/{$tournament}");
+        return Tournament::fromResponse($this->client, $response['tournament']);
+    }
+
+    /**
      * Retrieve a tournament's participant list.
      * @param string $tournament
      * @return Collection

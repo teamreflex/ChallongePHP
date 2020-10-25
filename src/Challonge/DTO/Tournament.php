@@ -112,7 +112,7 @@ class Tournament extends DataTransferObject
      */
     public function start(): Tournament
     {
-        if ($this->state !== 'pending') {
+        if ($this->state === 'underway') {
             throw new AlreadyStartedException('Tournament is already underway.');
         }
 
@@ -179,7 +179,7 @@ class Tournament extends DataTransferObject
 
     /**
      * Deletes a tournament along with all its associated records.
-     * @return bool
+     * @return Tournament
      * @throws \JsonException
      * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
      * @throws \Reflex\Challonge\Exceptions\NotFoundException
@@ -188,11 +188,10 @@ class Tournament extends DataTransferObject
      * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
      * @throws \Reflex\Challonge\Exceptions\ValidationException
      */
-    public function delete(): bool
+    public function delete(): Tournament
     {
         $response = $this->client->request('delete', "tournaments/{$this->id}");
-        // TODO: validate the response
-        return true;
+        return self::fromResponse($this->client, $response['tournament']);
     }
 
     /**
@@ -274,5 +273,42 @@ class Tournament extends DataTransferObject
         $response = $this->client->request('post', "tournaments/{$this->id}/participants/bulk_add", $options);
         return Collection::make($response)
             ->map(fn (array $participant) => Participant::fromResponse($this->client, $participant['participant']));
+    }
+
+    /**
+     * If the tournament has not started, delete a participant, automatically filling in the abandoned seed number.
+     * @param int $id
+     * @return Participant
+     * @throws \JsonException
+     * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
+     * @throws \Reflex\Challonge\Exceptions\NotFoundException
+     * @throws \Reflex\Challonge\Exceptions\ServerException
+     * @throws \Reflex\Challonge\Exceptions\UnauthorizedException
+     * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
+     * @throws \Reflex\Challonge\Exceptions\ValidationException
+     */
+    public function deleteParticipant(int $id): Participant
+    {
+        $response = $this->client->request('delete', "tournaments/{$this->id}/participants/{$id}");
+        return Participant::fromResponse($this->client, $response['participant']);
+    }
+
+    /**
+     * Update the attributes of a tournament participant.
+     * @param int $id
+     * @param array $options
+     * @return Participant
+     * @throws \JsonException
+     * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
+     * @throws \Reflex\Challonge\Exceptions\NotFoundException
+     * @throws \Reflex\Challonge\Exceptions\ServerException
+     * @throws \Reflex\Challonge\Exceptions\UnauthorizedException
+     * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
+     * @throws \Reflex\Challonge\Exceptions\ValidationException
+     */
+    public function updateParticipant(int $id, array $options = []): Participant
+    {
+        $response = $this->client->request('put', "tournaments/{$this->id}/participants/{$id}", $options);
+        return Participant::fromResponse($this->client, $response['participant']);
     }
 }

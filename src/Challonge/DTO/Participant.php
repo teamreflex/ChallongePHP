@@ -66,7 +66,7 @@ class Participant extends DataTransferObject
 
     /**
      * If the tournament has not started, delete a participant, automatically filling in the abandoned seed number.
-     * @return bool
+     * @return Participant
      * @throws \JsonException
      * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
      * @throws \Reflex\Challonge\Exceptions\NotFoundException
@@ -75,10 +75,9 @@ class Participant extends DataTransferObject
      * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
      * @throws \Reflex\Challonge\Exceptions\ValidationException
      */
-    public function delete(): bool
+    public function delete(): Participant
     {
         $response = $this->client->request('delete', "tournaments/{$this->tournament_id}/participants/{$this->id}");
-        // TODO: validate response
-        return true;
+        return self::fromResponse($this->client, $response['participant']);
     }
 }
