@@ -196,6 +196,50 @@ class Tournament extends DataTransferObject
     }
 
     /**
+     * Processes all checkins before the tournament has started.
+     * @return Tournament
+     * @throws AlreadyStartedException
+     * @throws \JsonException
+     * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
+     * @throws \Reflex\Challonge\Exceptions\NotFoundException
+     * @throws \Reflex\Challonge\Exceptions\ServerException
+     * @throws \Reflex\Challonge\Exceptions\UnauthorizedException
+     * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
+     * @throws \Reflex\Challonge\Exceptions\ValidationException
+     */
+    public function processCheckins(): Tournament
+    {
+        if ($this->state === 'underway') {
+            throw new AlreadyStartedException('Tournament is already underway.');
+        }
+
+        $response = $this->client->request('post', "tournaments/{$this->id}/process_check_ins");
+        return self::fromResponse($this->client, $response['tournament']);
+    }
+
+    /**
+     * Cancels all checkins before the tournament has started.
+     * @return Tournament
+     * @throws AlreadyStartedException
+     * @throws \JsonException
+     * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
+     * @throws \Reflex\Challonge\Exceptions\NotFoundException
+     * @throws \Reflex\Challonge\Exceptions\ServerException
+     * @throws \Reflex\Challonge\Exceptions\UnauthorizedException
+     * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
+     * @throws \Reflex\Challonge\Exceptions\ValidationException
+     */
+    public function abortCheckins(): Tournament
+    {
+        if ($this->state === 'underway') {
+            throw new AlreadyStartedException('Tournament is already underway.');
+        }
+
+        $response = $this->client->request('post', "tournaments/{$this->id}/abort_check_in");
+        return self::fromResponse($this->client, $response['tournament']);
+    }
+
+    /**
      * Add a participant to a tournament (up until it is started).
      * @param array $options
      * @return Participant
