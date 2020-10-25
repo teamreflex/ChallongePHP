@@ -173,7 +173,7 @@ class Tournament extends DataTransferObject
      */
     public function update(array $options = []): Tournament
     {
-        $response = $this->client->request('put', "tournaments/{$this->id}", $options);
+        $response = $this->client->request('put', "tournaments/{$this->id}", $this->client->mapOptions($options, 'tournament'));
         return self::fromResponse($this->client, $response['tournament']);
     }
 
@@ -269,7 +269,7 @@ class Tournament extends DataTransferObject
      */
     public function addParticipant(array $options = []): Participant
     {
-        $response = $this->client->request('post', "tournaments/{$this->id}/participants", $options);
+        $response = $this->client->request('post', "tournaments/{$this->id}/participants", $this->client->mapOptions($options, 'participant'));
         return Participant::fromResponse($this->client, $response['participant']);
     }
 
@@ -287,7 +287,7 @@ class Tournament extends DataTransferObject
      */
     public function bulkAddParticipant(array $options = []): Collection
     {
-        $response = $this->client->request('post', "tournaments/{$this->id}/participants/bulk_add", $options);
+        $response = $this->client->request('post', "tournaments/{$this->id}/participants/bulk_add", $this->client->mapOptions($options, 'participant'));
         return Collection::make($response)
             ->map(fn (array $participant) => Participant::fromResponse($this->client, $participant['participant']));
     }
@@ -325,7 +325,7 @@ class Tournament extends DataTransferObject
      */
     public function updateParticipant(int $id, array $options = []): Participant
     {
-        $response = $this->client->request('put', "tournaments/{$this->id}/participants/{$id}", $options);
+        $response = $this->client->request('put', "tournaments/{$this->id}/participants/{$id}", $this->client->mapOptions($options, 'participant'));
         return Participant::fromResponse($this->client, $response['participant']);
     }
 }

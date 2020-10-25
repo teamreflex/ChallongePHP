@@ -60,7 +60,7 @@ class Participant extends DataTransferObject
      */
     public function update(array $options = []): Participant
     {
-        $response = $this->client->request('put', "tournaments/{$this->tournament_id}/participants/{$this->id}", $options);
+        $response = $this->client->request('put', "tournaments/{$this->tournament_id}/participants/{$this->id}", $this->client->mapOptions($options, 'participant'));
         return self::fromResponse($this->client, $response['participant']);
     }
 

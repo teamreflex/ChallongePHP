@@ -17,18 +17,21 @@ class ClientWrapper
     protected ClientInterface $client;
     protected string $key;
     protected string $version;
+    protected bool $mapOptions;
 
     /**
      * ClientWrapper constructor.
      * @param ClientInterface $client
      * @param string $key
      * @param string $version
+     * @param bool $mapOptions
      */
-    public function __construct(ClientInterface $client, string $key, string $version)
+    public function __construct(ClientInterface $client, string $key, string $version, bool $mapOptions = true)
     {
         $this->client = $client;
         $this->key = $key;
         $this->version = $version;
+        $this->mapOptions = $mapOptions;
     }
 
     /**
@@ -109,6 +112,23 @@ class ClientWrapper
                 throw new UnexpectedErrorException($decodedResponse);
                 break;
         }
+    }
+
+    /**
+     * Challonge requires input in a format such as ["tournament[name]" => "test tournament"].
+     * This allows us to just do ["name" => "test tournament"].
+     * @param array $options
+     * @param string $scope
+     * @return array
+     */
+    public function mapOptions(array $options, string $scope): array
+    {
+        if (! $this->mapOptions) {
+            return $options;
+        }
+
+        $keys = array_map(fn (string $key) => "{$scope}[{$key}]", array_keys($options));
+        return array_combine($keys, array_values($options));
     }
 
     /**

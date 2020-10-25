@@ -58,7 +58,7 @@ class Match extends DataTransferObject
      */
     public function update(array $options = []): Match
     {
-        $response = $this->client->request('put', "tournaments/{$this->tournament_id}/matches/{$this->id}", $options);
+        $response = $this->client->request('put', "tournaments/{$this->tournament_id}/matches/{$this->id}", $this->client->mapOptions($options, 'match'));
         return self::fromResponse($this->client, $response['match']);
     }
 

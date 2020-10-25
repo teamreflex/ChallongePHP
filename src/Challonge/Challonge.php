@@ -26,10 +26,11 @@ class Challonge
      * Challonge constructor.
      * @param ClientInterface $client
      * @param string $key
+     * @param bool $mapOptions
      */
-    public function __construct(ClientInterface $client, string $key = '')
+    public function __construct(ClientInterface $client, string $key = '', bool $mapOptions = true)
     {
-        $this->client = new ClientWrapper($client, $key, $this->version);
+        $this->client = new ClientWrapper($client, $key, $this->version, $mapOptions);
     }
 
     /**
@@ -71,7 +72,7 @@ class Challonge
      */
     public function createTournament(array $options = []): Tournament
     {
-        $response = $this->client->request('post', 'tournaments', $options);
+        $response = $this->client->request('post', 'tournaments', $this->client->mapOptions($options, 'tournament'));
         return Tournament::fromResponse($this->client, $response['tournament']);
     }
 
