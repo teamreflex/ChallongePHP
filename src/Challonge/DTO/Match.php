@@ -61,4 +61,55 @@ class Match extends DataTransferObject
         $response = $this->client->request('put', "tournaments/{$this->tournament_id}/matches/{$this->id}", $options);
         return self::fromResponse($this->client, $response['match']);
     }
+
+    /**
+     * Reopen a match.
+     * @return Match
+     * @throws \JsonException
+     * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
+     * @throws \Reflex\Challonge\Exceptions\NotFoundException
+     * @throws \Reflex\Challonge\Exceptions\ServerException
+     * @throws \Reflex\Challonge\Exceptions\UnauthorizedException
+     * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
+     * @throws \Reflex\Challonge\Exceptions\ValidationException
+     */
+    public function reopen(): Match
+    {
+        $response = $this->client->request('post', "tournaments/{$this->tournament_id}/matches/{$this->id}/reopen");
+        return self::fromResponse($this->client, $response['match']);
+    }
+
+    /**
+     * Mark a match as underway, highlights it in the bracket.
+     * @return Match
+     * @throws \JsonException
+     * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
+     * @throws \Reflex\Challonge\Exceptions\NotFoundException
+     * @throws \Reflex\Challonge\Exceptions\ServerException
+     * @throws \Reflex\Challonge\Exceptions\UnauthorizedException
+     * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
+     * @throws \Reflex\Challonge\Exceptions\ValidationException
+     */
+    public function markAsUnderway(): Match
+    {
+        $response = $this->client->request('post', "tournaments/{$this->tournament_id}/matches/{$this->id}/mark_as_underway");
+        return self::fromResponse($this->client, $response['match']);
+    }
+
+    /**
+     * Unmark a match as underway.
+     * @return Match
+     * @throws \JsonException
+     * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
+     * @throws \Reflex\Challonge\Exceptions\NotFoundException
+     * @throws \Reflex\Challonge\Exceptions\ServerException
+     * @throws \Reflex\Challonge\Exceptions\UnauthorizedException
+     * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
+     * @throws \Reflex\Challonge\Exceptions\ValidationException
+     */
+    public function unmarkAsUnderway(): Match
+    {
+        $response = $this->client->request('post', "tournaments/{$this->tournament_id}/matches/{$this->id}/unmark_as_underway");
+        return self::fromResponse($this->client, $response['match']);
+    }
 }

@@ -195,6 +195,23 @@ class Tournament extends DataTransferObject
     }
 
     /**
+     * Removes all participants.
+     * @return Tournament
+     * @throws \JsonException
+     * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
+     * @throws \Reflex\Challonge\Exceptions\NotFoundException
+     * @throws \Reflex\Challonge\Exceptions\ServerException
+     * @throws \Reflex\Challonge\Exceptions\UnauthorizedException
+     * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
+     * @throws \Reflex\Challonge\Exceptions\ValidationException
+     */
+    public function clear(): Tournament
+    {
+        $response = $this->client->request('post', "tournaments/{$this->id}/participants/clear");
+        return self::fromResponse($this->client, $response['tournament']);
+    }
+
+    /**
      * Processes all checkins before the tournament has started.
      * @return Tournament
      * @throws AlreadyStartedException

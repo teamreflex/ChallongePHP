@@ -80,4 +80,38 @@ class Participant extends DataTransferObject
         $response = $this->client->request('delete', "tournaments/{$this->tournament_id}/participants/{$this->id}");
         return self::fromResponse($this->client, $response['participant']);
     }
+
+    /**
+     * Check a participant in.
+     * @return Participant
+     * @throws \JsonException
+     * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
+     * @throws \Reflex\Challonge\Exceptions\NotFoundException
+     * @throws \Reflex\Challonge\Exceptions\ServerException
+     * @throws \Reflex\Challonge\Exceptions\UnauthorizedException
+     * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
+     * @throws \Reflex\Challonge\Exceptions\ValidationException
+     */
+    public function checkin(): Participant
+    {
+        $response = $this->client->request('post', "tournaments/{$this->tournament_id}/participants/{$this->id}/check_in");
+        return self::fromResponse($this->client, $response['participant']);
+    }
+
+    /**
+     * Undo a participant checkin.
+     * @return Participant
+     * @throws \JsonException
+     * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
+     * @throws \Reflex\Challonge\Exceptions\NotFoundException
+     * @throws \Reflex\Challonge\Exceptions\ServerException
+     * @throws \Reflex\Challonge\Exceptions\UnauthorizedException
+     * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
+     * @throws \Reflex\Challonge\Exceptions\ValidationException
+     */
+    public function undoCheckin(): Participant
+    {
+        $response = $this->client->request('post', "tournaments/{$this->tournament_id}/participants/{$this->id}/undo_check_in");
+        return self::fromResponse($this->client, $response['participant']);
+    }
 }
