@@ -21,8 +21,15 @@
     ],
     "autoload": {
         "psr-4": {
-            "Reflex\\Challonge\\": "src/Challonge",
+            "Reflex\\Challonge\\": "src/Challonge"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "Tests\\": "tests"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
     }
 }
