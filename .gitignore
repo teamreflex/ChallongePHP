@@ -1,7 +1,4 @@
-ChallongePHP.sublime-project
-ChallongePHP.sublime-workspace
-/vendor/
-
-composer.lock
-
-index.php
+/vendor
+/.idea
+/.phpunit.cache
+.phpunit.result.cache

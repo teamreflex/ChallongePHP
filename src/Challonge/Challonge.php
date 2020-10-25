@@ -2,173 +2,208 @@
 
 namespace Reflex\Challonge;
 
-use Reflex\Challonge\Models\Match;
-use Reflex\Challonge\Helpers\Guzzle;
-use Reflex\Challonge\Models\Tournament;
-use Reflex\Challonge\Models\Participant;
+use Illuminate\Support\Collection;
+use Psr\Http\Client\ClientInterface;
+use Reflex\Challonge\DTO\Match;
+use Reflex\Challonge\DTO\Tournament;
+use Reflex\Challonge\DTO\Participant;
 
 class Challonge
 {
     /**
      * ChallongePHP version.
+     * Required to pass into Challonge.
      */
-    const VERSION = '1.0.3';
+    protected string $version = '2.0.0';
 
     /**
-     * Instantiate an instance with the API key.
-     *
-     * @param string $api_key
+     * PSR-18 compatible HTTP client wrapped in our wrapper.
+     * @var ClientWrapper
      */
-    public function __construct($api_key = '', $verifySsl = true)
+    protected ClientWrapper $client;
+
+    /**
+     * Challonge constructor.
+     * @param ClientInterface $client
+     * @param string $key
+     * @param bool $mapOptions
+     */
+    public function __construct(ClientInterface $client, string $key = '', bool $mapOptions = true)
     {
-        @define("CHALLONGE_VERSION", self::VERSION);
-        @define("CHALLONGE_KEY", $api_key);
-        @define("CHALLONGE_SSL", $verifySsl);
+        $this->client = new ClientWrapper($client, $key, $this->version, $mapOptions);
     }
 
     /**
-     * Set whether we want to verify the SSL certificate.
-     *
-     * @param  boolean $verifySsl
-     * @return $this
+     * @return ClientWrapper
      */
-    public function setSsl($verifySsl)
+    public function getClient(): ClientWrapper
     {
-        @define("CHALLONGE_SSL", $verifySsl);
-        return $this;
+        return $this->client;
     }
 
     /**
      * Retrieve a set of tournaments created with your account.
-     *
-     * @return array
+     * @return Collection
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
-    public function getTournaments() {
-        $response = Guzzle::get('tournaments');
-
-        $tournaments = [];
-        foreach ($response as $tourney) {
-            $tournaments[] = new Tournament($tourney->tournament);
-        }
-
-        return $tournaments;
+    public function getTournaments(): Collection {
+        $response = $this->client->request('get', 'tournaments');
+        return Collection::make($response)
+            ->map(fn (array $tournament) => Tournament::fromResponse($this->client, $tournament['tournament']));
     }
 
     /**
      * Create a new tournament.
-     *
-     * @param  array $params
+     * @param array $options
      * @return Tournament
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
-    public function createTournament($params)
+    public function createTournament(array $options = []): Tournament
     {
-        $response = Guzzle::post("tournaments", $params);
-        return new Tournament($response->tournament);
+        $response = $this->client->request('post', 'tournaments', $this->client->mapOptions($options, 'tournament'));
+        return Tournament::fromResponse($this->client, $response['tournament']);
     }
 
     /**
-     * Retrieve a single tournament record created with your account.
-     *
-     * @param  string $tournament
+     * Retrieve a single tournament record.
+     * @param string $tournament
      * @return Tournament
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
-    public function getTournament($tournament)
+    public function fetchTournament(string $tournament): Tournament
     {
-        $response = Guzzle::get("tournaments/{$tournament}");
-        return new Tournament($response->tournament);
+        $response = $this->client->request('get', "tournaments/{$tournament}");
+        return Tournament::fromResponse($this->client, $response['tournament']);
+    }
+
+    /**
+     * Delete a tournament and all it's records.
+     * @param string $tournament
+     * @return Tournament
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
+     */
+    public function deleteTournament(string $tournament): Tournament
+    {
+        $response = $this->client->request('delete', "tournaments/{$tournament}");
+        return Tournament::fromResponse($this->client, $response['tournament']);
     }
 
     /**
      * Retrieve a tournament's participant list.
-     *
-     * @param  string $tournament
-     * @return array
+     * @param string $tournament
+     * @return Collection
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
-    public function getParticipants($tournament)
+    public function getParticipants(string $tournament): Collection
     {
-        $response = Guzzle::get("tournaments/{$tournament}/participants");
-
-        $participants = [];
-        foreach ($response as $team) {
-            $participant = new Participant($team->participant);
-            $participant->tournament_slug = $tournament;
-            $participants[] = $participant;
-        }
-
-        return $participants;
+        $response = $this->client->request('get', "tournaments/{$tournament}/participants");
+        return Collection::make($response)
+            ->map(fn (array $participant) => Participant::fromResponse($this->client, $participant['participant']));
     }
 
     /**
      * Randomize seeds among participants.
-     *
-     * @param  string $tournament
-     * @return array
+     * @param string $tournament
+     * @return Collection
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
-    public function randomizeParticipants($tournament)
+    public function randomizeParticipants(string $tournament): Collection
     {
-        $response = Guzzle::post("tournaments/{$tournament}/participants/randomize");
-
-        $participants = [];
-        foreach ($response as $team) {
-            $participant = new Participant($team->participant);
-            $participant->tournament_slug = $tournament;
-            $participants[] = $participant;
-        }
-
-        return $participants;
+        $response = $this->client->request('post', "tournaments/{$tournament}/participants/randomize");
+        return Collection::make($response)
+            ->map(fn (array $participant) => Participant::fromResponse($this->client, $participant['participant']));
     }
 
     /**
      * Retrieve a single participant record for a tournament.
-     *
-     * @param  string $tournament
-     * @param  string $participant
-     * @return array
+     * @param string $tournament
+     * @param int $participant
+     * @return Participant
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
-    public function getParticipant($tournament, $participant)
+    public function getParticipant(string $tournament, int $participant): Participant
     {
-        $response = Guzzle::get("tournaments/{$tournament}/participants/{$participant}");
-
-        $participant = new Participant($response->participant);
-        $participant->tournament_slug = $tournament;
-
-        return $participant;
+        $response = $this->client->request('post', "tournaments/{$tournament}/participants/{$participant}");
+        return Participant::fromResponse($this->client, $response['participant']);
     }
 
     /**
      * Retrieve a tournament's match list.
-     *
-     * @param  string $tournament
-     * @return array
+     * @param string $tournament
+     * @return Collection
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
-    public function getMatches($tournament)
+    public function getMatches(string $tournament): Collection
     {
-        $response = Guzzle::get("tournaments/{$tournament}/matches");
-
-        $matches = [];
-        foreach ($response as $match) {
-            $matchModel = new Match($match->match);
-            $matchModel->tournament_slug = $tournament;
-            $matches[] = $matchModel;
-        }
-
-        return $matches;
+        $response = $this->client->request('get', "tournaments/{$tournament}/matches");
+        return Collection::make($response)
+            ->map(fn (array $match) => Match::fromResponse($this->client, $match['match']));
     }
 
     /**
      * Retrieve a single match record for a tournament.
-     *
-     * @param  string $tournament
-     * @param  string $match
-     * @return array
+     * @param string $tournament
+     * @param int $match
+     * @return Match
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
-    public function getMatch($tournament, $match)
+    public function getMatch(string $tournament, int $match): Match
     {
-        $response = Guzzle::get("tournaments/{$tournament}/matches/{$match}");
-
-        $match = new Match($response->match);
-        $match->tournament_slug = $tournament;
-
-        return $match;
+        $response = $this->client->request('get', "tournaments/{$tournament}/matches/{$match}");
+        return Match::fromResponse($this->client, $response['match']);
     }
 }
