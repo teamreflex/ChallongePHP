@@ -88,7 +88,8 @@ class ClientWrapper
      */
     protected function handleErrors(ResponseInterface $response): array
     {
-        switch ($response->getStatusCode()) {
+        $statuscode = $response->getStatusCode();
+        switch ($statuscode) {
             case 200:
                 return json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR);
                 break;
@@ -104,8 +105,8 @@ class ClientWrapper
             case 422:
                 throw new ValidationException('Validation error(s) for create or update method');
                 break;
-            case 500:
-                throw new ServerException('Something went wrong on Challonge\'s end');
+            case ($statuscode >= 500 && $statuscode <= 511) :
+                throw new ServerException('Something went wrong on Challonge\'s end. Error:'. $statuscode);
                 break;
             default:
                 $decodedResponse = json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR);
