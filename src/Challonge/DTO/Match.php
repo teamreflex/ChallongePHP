@@ -23,7 +23,7 @@ class Match extends DataTransferObject
     public ?string $open_graph_image_content_type;
     public ?string $open_graph_image_file_size;
     public bool $optional;
-    public int $player1_id;
+    public ?int $player1_id;
     public bool $player1_is_prereq_match_loser;
     public ?int $player1_prereq_match_id;
     public ?int $player1_votes;
