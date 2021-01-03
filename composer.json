@@ -5,7 +5,7 @@
         "ext-json": "*",
         "php": "^7.4",
         "psr/http-client": "^1.0",
-        "illuminate/collections": "~8.0 | ~7.0 | ~6.0",
+        "illuminate/collections": "~8.0",
         "spatie/data-transfer-object": "^2.5"
     },
     "require-dev": {
