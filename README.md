@@ -7,7 +7,7 @@
 PSR-18 compliant package for interfacing with the [Challonge] API.
 
 ## Installation
-Requires PHP 7.4 as it takes advantage of its type support.
+Requires PHP 7.4 as it takes advantage of its type support. Does not yet support PHP  8  due to the Match class conflicting with the new `match` keyword.
 
 Install via composer:
 
@@ -20,14 +20,14 @@ As the package is PSR-18 compliant, it does not come with an HTTP client by defa
 
 You can use a client such as Guzzle, and pass an instance of it when instantiating:
 
-```bash
+```php
 $http = new GuzzleHttp\Client();
 $challonge = new Challonge($http, 'api_key_here', true);
 ```
 
 By default, the package maps the keys of any input, as Challonge requires its input to be in a format such as:
 
-```bash
+```php
 $tournament = $challonge->createTournament([
     'tournament[name]' => 'test'
 ]);
@@ -35,7 +35,7 @@ $tournament = $challonge->createTournament([
 
 Which means you are able to use the package without prefixing your keys:
 
-```bash
+```php
 $tournament = $challonge->createTournament([
     'name' => 'test'
 ]);
@@ -45,7 +45,7 @@ You can change the third argument to `false` to disable this mapping if you woul
 
 Now you're ready to make requests:
 
-```bash
+```php
 $tournament = $challonge->fetchTournament('challongephptest');
 ```
 
