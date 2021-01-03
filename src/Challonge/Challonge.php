@@ -4,7 +4,7 @@ namespace Reflex\Challonge;
 
 use Illuminate\Support\Collection;
 use Psr\Http\Client\ClientInterface;
-use Reflex\Challonge\DTO\Match;
+use Reflex\Challonge\DTO\MatchDto;
 use Reflex\Challonge\DTO\Tournament;
 use Reflex\Challonge\DTO\Participant;
 
@@ -14,7 +14,7 @@ class Challonge
      * ChallongePHP version.
      * Required to pass into Challonge.
      */
-    protected string $version = '2.1.0';
+    protected string $version = '3.0.0';
 
     /**
      * PSR-18 compatible HTTP client wrapped in our wrapper.
@@ -185,14 +185,14 @@ class Challonge
     {
         $response = $this->client->request('get', "tournaments/{$tournament}/matches");
         return Collection::make($response)
-            ->map(fn (array $match) => Match::fromResponse($this->client, $match['match']));
+            ->map(fn (array $match) => MatchDto::fromResponse($this->client, $match['match']));
     }
 
     /**
      * Retrieve a single match record for a tournament.
      * @param string $tournament
      * @param int $match
-     * @return Match
+     * @return MatchDto
      * @throws Exceptions\InvalidFormatException
      * @throws Exceptions\NotFoundException
      * @throws Exceptions\ServerException
@@ -201,10 +201,10 @@ class Challonge
      * @throws Exceptions\ValidationException
      * @throws \JsonException
      */
-    public function getMatch(string $tournament, int $match): Match
+    public function getMatch(string $tournament, int $match): MatchDto
     {
         $response = $this->client->request('get', "tournaments/{$tournament}/matches/{$match}");
-        return Match::fromResponse($this->client, $response['match']);
+        return MatchDto::fromResponse($this->client, $response['match']);
     }
 
     /**
@@ -314,11 +314,11 @@ class Challonge
     /**
      * Get match points for a given user.
      *
-     * @param  Match $match
+     * @param  MatchDto $match
      * @param  int $playerId
      * @return Collection
      **/
-    private function getMatchPts(Match $match, int $playerId): Collection
+    private function getMatchPts(MatchDto $match, int $playerId): Collection
     {
         $playerScore = 0;
         $scores = [0, 0];

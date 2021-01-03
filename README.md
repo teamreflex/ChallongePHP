@@ -7,12 +7,19 @@
 PSR-18 compliant package for interfacing with the [Challonge] API.
 
 ## Installation
-Requires PHP 7.4 as it takes advantage of its type support. Does not yet support PHP  8  due to the Match class conflicting with the new `match` keyword.
+Refer to the table for PHP version compatibility:
+
+| ChallongePHP Ver. | Compatible PHP |
+|----------|-------------|
+| ^3.0 | 7.4 - 8.0 |
+| ^2.1 | 7.4 |
+| ^2.0 | 7.4 |
+| ^1.0 | 7.0 - 7.4 |
 
 Install via composer:
 
 ```bash
-composer require team-reflex/challonge-php
+composer require team-reflex/challonge-php:version
 ```
 
 ## Usage

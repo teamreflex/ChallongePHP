@@ -3,7 +3,7 @@
 namespace Tests;
 
 use GuzzleHttp\Psr7\Response;
-use Reflex\Challonge\DTO\Match;
+use Reflex\Challonge\DTO\MatchDto;
 
 class MatchTest extends BaseTestCase
 {
@@ -29,7 +29,7 @@ class MatchTest extends BaseTestCase
     {
         $this->mockHandler->append(new Response(200, [], file_get_contents(__DIR__ . '/stubs/match_fetch.json')));
 
-        $match = Match::fromResponse(
+        $match = MatchDto::fromResponse(
             $this->challonge->getClient(),
             json_decode(file_get_contents(__DIR__ . '/stubs/match_fetch.json'), true)['match']
         );
@@ -43,7 +43,7 @@ class MatchTest extends BaseTestCase
     {
         $this->mockHandler->append(new Response(200, [], file_get_contents(__DIR__ . '/stubs/match_fetch.json')));
 
-        $match = Match::fromResponse(
+        $match = MatchDto::fromResponse(
             $this->challonge->getClient(),
             json_decode(file_get_contents(__DIR__ . '/stubs/match_fetch.json'), true)['match']
         );
@@ -57,7 +57,7 @@ class MatchTest extends BaseTestCase
     {
         $this->mockHandler->append(new Response(200, [], file_get_contents(__DIR__ . '/stubs/match_fetch.json')));
 
-        $match = Match::fromResponse(
+        $match = MatchDto::fromResponse(
             $this->challonge->getClient(),
             json_decode(file_get_contents(__DIR__ . '/stubs/match_fetch.json'), true)['match']
         );
@@ -71,7 +71,7 @@ class MatchTest extends BaseTestCase
     {
         $this->mockHandler->append(new Response(200, [], file_get_contents(__DIR__ . '/stubs/match_fetch.json')));
 
-        $match = Match::fromResponse(
+        $match = MatchDto::fromResponse(
             $this->challonge->getClient(),
             json_decode(file_get_contents(__DIR__ . '/stubs/match_fetch.json'), true)['match']
         );

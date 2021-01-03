@@ -3,7 +3,7 @@
     "description": "PSR-18 compatible library to interface with the bracket generator Challonge.",
     "require": {
         "ext-json": "*",
-        "php": "^7.4",
+        "php": "^7.4 | ^8.0",
         "psr/http-client": "^1.0",
         "illuminate/collections": "~8.0",
         "spatie/data-transfer-object": "^2.5"

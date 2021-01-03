@@ -5,7 +5,7 @@ namespace Reflex\Challonge\DTO;
 use Reflex\Challonge\DtoClientTrait;
 use Spatie\DataTransferObject\DataTransferObject;
 
-class Match extends DataTransferObject
+class MatchDto extends DataTransferObject
 {
     use DtoClientTrait;
 
@@ -47,7 +47,7 @@ class Match extends DataTransferObject
     /**
      * Update/submit the score(s) for a match.
      * @param array $options
-     * @return Match
+     * @return MatchDto
      * @throws \JsonException
      * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
      * @throws \Reflex\Challonge\Exceptions\NotFoundException
@@ -56,7 +56,7 @@ class Match extends DataTransferObject
      * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
      * @throws \Reflex\Challonge\Exceptions\ValidationException
      */
-    public function update(array $options = []): Match
+    public function update(array $options = []): MatchDto
     {
         $response = $this->client->request('put', "tournaments/{$this->tournament_id}/matches/{$this->id}", $this->client->mapOptions($options, 'match'));
         return self::fromResponse($this->client, $response['match']);
@@ -64,7 +64,7 @@ class Match extends DataTransferObject
 
     /**
      * Reopen a match.
-     * @return Match
+     * @return MatchDto
      * @throws \JsonException
      * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
      * @throws \Reflex\Challonge\Exceptions\NotFoundException
@@ -73,7 +73,7 @@ class Match extends DataTransferObject
      * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
      * @throws \Reflex\Challonge\Exceptions\ValidationException
      */
-    public function reopen(): Match
+    public function reopen(): MatchDto
     {
         $response = $this->client->request('post', "tournaments/{$this->tournament_id}/matches/{$this->id}/reopen");
         return self::fromResponse($this->client, $response['match']);
@@ -81,7 +81,7 @@ class Match extends DataTransferObject
 
     /**
      * Mark a match as underway, highlights it in the bracket.
-     * @return Match
+     * @return MatchDto
      * @throws \JsonException
      * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
      * @throws \Reflex\Challonge\Exceptions\NotFoundException
@@ -90,7 +90,7 @@ class Match extends DataTransferObject
      * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
      * @throws \Reflex\Challonge\Exceptions\ValidationException
      */
-    public function markAsUnderway(): Match
+    public function markAsUnderway(): MatchDto
     {
         $response = $this->client->request('post', "tournaments/{$this->tournament_id}/matches/{$this->id}/mark_as_underway");
         return self::fromResponse($this->client, $response['match']);
@@ -98,7 +98,7 @@ class Match extends DataTransferObject
 
     /**
      * Unmark a match as underway.
-     * @return Match
+     * @return MatchDto
      * @throws \JsonException
      * @throws \Reflex\Challonge\Exceptions\InvalidFormatException
      * @throws \Reflex\Challonge\Exceptions\NotFoundException
@@ -107,7 +107,7 @@ class Match extends DataTransferObject
      * @throws \Reflex\Challonge\Exceptions\UnexpectedErrorException
      * @throws \Reflex\Challonge\Exceptions\ValidationException
      */
-    public function unmarkAsUnderway(): Match
+    public function unmarkAsUnderway(): MatchDto
     {
         $response = $this->client->request('post', "tournaments/{$this->tournament_id}/matches/{$this->id}/unmark_as_underway");
         return self::fromResponse($this->client, $response['match']);
