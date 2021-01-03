@@ -210,21 +210,29 @@ class Challonge
     /**
      * Retrieve a leaderboard listing for a tournament.
      *
-     * @param  string $tournament
-     * @param  string $match
+     * @param string $tournament
      * @return Collection
+     * @throws Exceptions\InvalidFormatException
+     * @throws Exceptions\NotFoundException
+     * @throws Exceptions\ServerException
+     * @throws Exceptions\UnauthorizedException
+     * @throws Exceptions\UnexpectedErrorException
+     * @throws Exceptions\ValidationException
+     * @throws \JsonException
      */
     public function getStandings(string $tournament): Collection
     {
         $participants = collect($this->getParticipants($tournament));
         $matches = collect($this->getMatches($tournament));
         $matchesComplete = count($matches->where('state', 'complete'));
-        $result['progress'] = (($matchesComplete > 0) ? round(($matchesComplete / count($matches)*100)) : 0);
+        $result['progress'] = (($matchesComplete > 0) ? round(($matchesComplete / count($matches) * 100)) : 0);
         $group = [];
         foreach ($participants as $team) {
             $teamWithResults = $this->getStanding($team, $matches);
             $finals[] = $teamWithResults->final['results'];
-            if(!empty($teamWithResults->groups[0])) $group[] = $teamWithResults->groups[0]['results'];
+            if (! empty($teamWithResults->groups[0])) {
+                $group[] = $teamWithResults->groups[0]['results'];
+            }
         }
         ((!empty($finals))? $result['final'] = collect($finals)->sortByDesc('win') : $finals = null);
         ((!empty($group))? $result['groups'] = collect($group)->sortByDesc('win') : $group = null);
@@ -233,7 +241,7 @@ class Challonge
 
 
     /**
-     * Get standing for participant accross all groups and matches
+     * Get standing for a participant across all groups and matches.
      *
      * @param  Participant $participant
      * @param  Collection $matches
@@ -244,46 +252,55 @@ class Challonge
         $participantGroups = [];
         foreach ($participant->group_player_ids as $playerGroupId) {
             $data = $matches->filter(function ($item) use ($playerGroupId) {
-                  if(in_array($playerGroupId, [$item->player1_id, $item->player2_id]))  return true;
+                  return in_array($playerGroupId, [$item->player1_id, $item->player2_id], true);
             });
+
             $participantGroup['matches'] = $data;
             $participantGroup['results'] = $this->matchResults($data, $playerGroupId, $participant->name);
             $participantGroups[] = $participantGroup;
         }
 
         $participantFinal['matches'] = $matches->filter(function ($item) use ($participant) {
-            return (($item->player1_id == $participant->id) || ($item->player2_id == $participant->id));
+            return (($item->player1_id === $participant->id) || ($item->player2_id === $participant->id));
         });
+
         $participantFinal['results'] = $this->matchResults($participantFinal['matches'], $participant->id, $participant->name);
         $participant->groups = $participantGroups;
         $participant->final = $participantFinal;
+
         return $participant;
     }
 
     /**
-     * matchResults function
+     * Get match results for a given player.
      *
-     * @param  Partitipant $participant
-     * @param  int $playerId
-     * @param  string $participantName
-     * @param  Collection $matches
-     * @return array
-     **/
+     * @param Collection $matches
+     * @param int $playerId
+     * @param string $participantName
+     * @return Collection
+     */
     private function matchResults(Collection $matches, int $playerId, string $participantName): Collection
     {
-        $result = ['win'=>0, 'lose'=>0, 'tie'=>0, 'pts'=>0, 'history'=>[], 'name'=>$participantName, 'id'=>$playerId];
+        $result = [
+            'win' => 0,
+            'lose' => 0,
+            'tie' => 0,
+            'pts' => 0,
+            'history' => [],
+            'name' => $participantName,
+            'id' => $playerId,
+        ];
 
         foreach ($matches as $match) {
-
-            if($match->winner_id == $playerId){
+            if ($match->winner_id === $playerId) {
                 $result['win'] += 1;
                 $result['history'][] = "W";
             }
-            if($match->loser_id == $playerId){
+            if ($match->loser_id === $playerId) {
                 $result['lose'] += 1;
                 $result['history'][] = "L";
             }
-            if($match->loser_id == null){
+            if ($match->loser_id === null) {
                 $result['tie'] += 1;
                 $result['history'][] = "T";
             }
@@ -295,7 +312,7 @@ class Challonge
     }
 
     /**
-     * Get match points for user function
+     * Get match points for a given user.
      *
      * @param  Match $match
      * @param  int $playerId
@@ -304,20 +321,26 @@ class Challonge
     private function getMatchPts(Match $match, int $playerId): Collection
     {
         $playerScore = 0;
-        $scores = [0,0];
-        if(empty($match->scores_csv)){
-            // dump($match); team forfiet = $match->loser_id
-        } else{
+        $scores = [0, 0];
+        if (! empty($match->scores_csv)){
             $scores = explode("-", $match->scores_csv);
             sort($scores);
         }
 
-        if($match->loser_id == $playerId)   $playerScore = $scores[0];
-        if($match->winner_id == $playerId)  $playerScore = $scores[1];
-        if($match->loser_id == null)    $playerScore = $scores[0];
-        $result[] = ['type'=>'loser', 'id'=>$match->loser_id, 'score'=>$scores[0]];
-        $result[] = ['type'=>'winner', 'id'=>$match->winner_id, 'score'=>$scores[1]];
-        $result[] = ['type'=>'player', 'id'=>$playerId, 'score'=>$playerScore];
+        if ($match->loser_id === $playerId) {
+            $playerScore = $scores[0];
+        }
+        if ($match->winner_id === $playerId) {
+            $playerScore = $scores[1];
+        }
+        if ($match->loser_id === null) {
+            $playerScore = $scores[0];
+        }
+
+        $result[] = ['type' => 'loser', 'id' => $match->loser_id, 'score' => $scores[0]];
+        $result[] = ['type' => 'winner', 'id' => $match->winner_id, 'score' => $scores[1]];
+        $result[] = ['type' => 'player', 'id' => $playerId, 'score' => $playerScore];
+
         return collect($result);
     }
 }

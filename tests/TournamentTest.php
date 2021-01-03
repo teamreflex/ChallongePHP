@@ -210,4 +210,14 @@ class TournamentTest extends BaseTestCase
 
         $this->assertEquals('Team 1', $response->display_name);
     }
+
+    public function test_tournament_standings(): void
+    {
+        $this->mockHandler->append(new Response(200, [], file_get_contents(__DIR__ . '/stubs/participant_index.json')));
+        $this->mockHandler->append(new Response(200, [], file_get_contents(__DIR__ . '/stubs/match_index.json')));
+
+        $response = $this->challonge->getStandings('challongephptest');
+
+        $this->assertEquals('Team 1',$response['final'][0]['name']);
+    }
 }
