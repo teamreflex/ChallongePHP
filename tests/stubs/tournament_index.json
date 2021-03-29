@@ -91,7 +91,8 @@
             "game_name":"Crash Team Racing",
             "participants_swappable":false,
             "team_convertable":false,
-            "group_stages_were_started":false
+            "group_stages_were_started":false,
+            "team_size_range":null
         }
     },
     {
@@ -186,7 +187,8 @@
             "game_name":"Crash Team Racing",
             "participants_swappable":false,
             "team_convertable":false,
-            "group_stages_were_started":false
+            "group_stages_were_started":false,
+            "team_size_range":null
         }
     }
 ]

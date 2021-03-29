@@ -58,7 +58,7 @@ class Tournament extends DataTransferObject
     public int $participants_count;
     public bool $group_stages_enabled;
     public bool $allow_participant_match_reporting;
-    public  $teams;
+    public $teams;
     public $check_in_duration;
     public ?string $start_at;
     public ?string $started_checking_in_at;
@@ -97,6 +97,7 @@ class Tournament extends DataTransferObject
     public bool $participants_swappable;
     public bool $team_convertable;
     public bool $group_stages_were_started;
+    public $team_size_range;
 
     /**
      * Start a tournament, opening up first round matches for score reporting.
