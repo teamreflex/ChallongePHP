@@ -92,7 +92,8 @@
             "participants_swappable":false,
             "team_convertable":false,
             "group_stages_were_started":false,
-            "team_size_range":null
+            "team_size_range":null,
+            "toxic":null
         }
     },
     {
@@ -188,7 +189,8 @@
             "participants_swappable":false,
             "team_convertable":false,
             "group_stages_were_started":false,
-            "team_size_range":null
+            "team_size_range":null,
+            "toxic":null
         }
     }
 ]
