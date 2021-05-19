@@ -165,7 +165,7 @@ class Challonge
      */
     public function getParticipant(string $tournament, int $participant): Participant
     {
-        $response = $this->client->request('post', "tournaments/{$tournament}/participants/{$participant}");
+        $response = $this->client->request('get', "tournaments/{$tournament}/participants/{$participant}");
         return Participant::fromResponse($this->client, $response['participant']);
     }
 
