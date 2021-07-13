@@ -9,6 +9,12 @@ class MatchDto extends DataTransferObject
 {
     use DtoClientTrait;
 
+    /**
+     * Due to Challonge not locking their API and constantly adding new fields...
+     * @var bool
+     */
+    protected bool $ignoreMissing = true;
+
     public ?int $attachment_count;
     public ?string $completed_at;
     public string $created_at;

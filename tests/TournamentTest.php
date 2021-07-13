@@ -7,6 +7,15 @@ use Reflex\Challonge\DTO\Tournament;
 
 class TournamentTest extends BaseTestCase
 {
+    public function test_tournament_ignore_missing(): void
+    {
+        $this->mockHandler->append(new Response(200, [], file_get_contents(__DIR__ . '/stubs/tournament_missing.json')));
+
+        $response = $this->challonge->fetchTournament('9044420');
+
+        $this->assertEquals('challongephp test', $response->name);
+    }
+
     public function test_tournament_index(): void
     {
         $this->mockHandler->append(new Response(200, [], file_get_contents(__DIR__ . '/stubs/tournament_index.json')));

@@ -56,6 +56,13 @@ Now you're ready to make requests:
 $tournament = $challonge->fetchTournament('challongephptest');
 ```
 
+## API Updates
+Challonge does not lock their API and has been consistently adding new fields to objects, thus breaking strongly typed DTOs.
+
+As of 3.0.4, all three DTOs have been marked to ignore missing fields. If Challonge adds a new field, it will no longer throw a `DataTransferObjectError`, but the DTO will also however not contain that new field.
+
+
+## Documentation
 As the package is fully type-hinted, everything should be self documenting, however there is documentation in the wiki.
 
 ## Contact

@@ -23,7 +23,7 @@ class BaseTestCase extends TestCase
         // real
         //$http = new Client();
 
-        $this->challonge = new Challonge($http, '');
+        $this->challonge = new Challonge($http, '', true);
 
         parent::setUp();
     }

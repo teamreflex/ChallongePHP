@@ -12,6 +12,12 @@ class Tournament extends DataTransferObject
 {
     use DtoClientTrait;
 
+    /**
+     * Due to Challonge not locking their API and constantly adding new fields...
+     * @var bool
+     */
+    protected bool $ignoreMissing = true;
+
     public int $id;
     public string $name;
     public string $url;

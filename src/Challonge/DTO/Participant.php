@@ -9,6 +9,12 @@ class Participant extends DataTransferObject
 {
     use DtoClientTrait;
 
+    /**
+     * Due to Challonge not locking their API and constantly adding new fields...
+     * @var bool
+     */
+    protected bool $ignoreMissing = true;
+
     public bool $active;
     public bool $check_in_open;
     public ?string $checked_in_at;
