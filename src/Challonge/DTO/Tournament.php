@@ -97,8 +97,10 @@ class Tournament extends DataTransferObject
     public bool $participants_swappable;
     public bool $team_convertable;
     public bool $group_stages_were_started;
-    public $team_size_range;
-    public $toxic;
+    public ?string $team_size_range;
+    public ?string $toxic;
+    public ?bool $use_new_style;
+    public array $optional_display_data;
 
     /**
      * Start a tournament, opening up first round matches for score reporting.
