@@ -92,6 +92,8 @@
         "team_convertable":false,
         "group_stages_were_started":false,
         "team_size_range":null,
-        "toxic":null
+        "toxic":null,
+        "use_new_style":null,
+        "optional_display_data":[]
     }
 }
