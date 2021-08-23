@@ -26,7 +26,7 @@ class ClientTest extends TestCase
     /**
      * Test PSR-18 compliance.
      */
-    public function test_psr18_complicance(): void
+    public function test_psr18_compliance(): void
     {
         $mockResponse = new Response(200, [], file_get_contents(__DIR__ . '/stubs/tournament_create.json'));
 
