@@ -5,6 +5,7 @@
         "ext-json": "*",
         "php": "^7.4 | ^8.0",
         "psr/http-client": "^1.0",
+        "psr/log": "^1.1.4",
         "illuminate/collections": "~8.0",
         "spatie/data-transfer-object": "^2.5",
         "nyholm/psr7": "^1.4"
