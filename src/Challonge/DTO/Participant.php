@@ -66,7 +66,7 @@ class Participant extends DataTransferObject
      */
     public function update(array $options = []): Participant
     {
-        $response = $this->client->request('put', "tournaments/{$this->tournament_id}/participants/{$this->id}", $this->client->mapOptions($options, 'participant'));
+        $response = $this->client->request('PUT', "tournaments/{$this->tournament_id}/participants/{$this->id}", $this->client->mapOptions($options, 'participant'));
         return self::fromResponse($this->client, $response['participant']);
     }
 
@@ -83,7 +83,7 @@ class Participant extends DataTransferObject
      */
     public function delete(): Participant
     {
-        $response = $this->client->request('delete', "tournaments/{$this->tournament_id}/participants/{$this->id}");
+        $response = $this->client->request('DELETE', "tournaments/{$this->tournament_id}/participants/{$this->id}");
         return self::fromResponse($this->client, $response['participant']);
     }
 
@@ -100,7 +100,7 @@ class Participant extends DataTransferObject
      */
     public function checkin(): Participant
     {
-        $response = $this->client->request('post', "tournaments/{$this->tournament_id}/participants/{$this->id}/check_in");
+        $response = $this->client->request('POST', "tournaments/{$this->tournament_id}/participants/{$this->id}/check_in");
         return self::fromResponse($this->client, $response['participant']);
     }
 
@@ -117,7 +117,7 @@ class Participant extends DataTransferObject
      */
     public function undoCheckin(): Participant
     {
-        $response = $this->client->request('post', "tournaments/{$this->tournament_id}/participants/{$this->id}/undo_check_in");
+        $response = $this->client->request('POST', "tournaments/{$this->tournament_id}/participants/{$this->id}/undo_check_in");
         return self::fromResponse($this->client, $response['participant']);
     }
 }

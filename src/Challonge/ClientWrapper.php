@@ -3,6 +3,8 @@
 namespace Reflex\Challonge;
 
 use JsonException;
+use Nyholm\Psr7\Request;
+use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Reflex\Challonge\Exceptions\InvalidFormatException;
@@ -47,18 +49,19 @@ class ClientWrapper
      * @throws UnauthorizedException
      * @throws UnexpectedErrorException
      * @throws ValidationException
+     * @throws ClientExceptionInterface
      */
     public function request(string $method, string $uri, array $content = []): array
     {
-        $base_uri = "https://api.challonge.com/v1/{$uri}.json";
+        $base_uri = "https://api.challonge.com/v1/{$uri}.json?api_key={$this->getKey()}";
 
-        $response = $this->client->request($method, $base_uri, [
-            'query'         => ['api_key' => $this->getKey()],
-            'form_params'   => $content,
-            'headers'       => $this->buildHeaders(),
-            'http_errors'   => false,
-            'verify'        => false,
-        ]);
+        $request = new Request(
+            $method,
+            $base_uri,
+            $this->buildHeaders(),
+            \http_build_query($content, '', '&'),
+        );
+        $response = $this->client->sendRequest($request);
 
         return $this->handleErrors($response);
     }
@@ -70,7 +73,9 @@ class ClientWrapper
     protected function buildHeaders(): array
     {
         return [
-            'User-Agent' => "ChallongePHP/{$this->version} ChallongePHP (https://github.com/teamreflex/ChallongePHP, {$this->version})"
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'User-Agent' => "ChallongePHP/{$this->version} ChallongePHP (https://github.com/teamreflex/ChallongePHP, {$this->version})",
         ];
     }
 

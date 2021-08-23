@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use PHPUnit\Framework\TestCase;
 use Reflex\Challonge\Challonge;
+use Symfony\Component\HttpClient\Psr18Client;
 
 class BaseTestCase extends TestCase
 {
@@ -17,13 +18,13 @@ class BaseTestCase extends TestCase
         $this->mockHandler = new MockHandler();
 
         // mocking
-        $http = new Client([
+        $client = new Client([
             'handler' => $this->mockHandler,
         ]);
         // real
-        //$http = new Client();
+//        $client = new Psr18Client();
 
-        $this->challonge = new Challonge($http, '', true);
+        $this->challonge = new Challonge($client, '', true);
 
         parent::setUp();
     }

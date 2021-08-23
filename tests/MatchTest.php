@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use GuzzleHttp\Psr7\Response;
+use Nyholm\Psr7\Response;
 use Reflex\Challonge\DTO\MatchDto;
 
 class MatchTest extends BaseTestCase

@@ -6,11 +6,14 @@
         "php": "^7.4 | ^8.0",
         "psr/http-client": "^1.0",
         "illuminate/collections": "~8.0",
-        "spatie/data-transfer-object": "^2.5"
+        "spatie/data-transfer-object": "^2.5",
+        "nyholm/psr7": "^1.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.4",
-        "guzzlehttp/guzzle": "^7.2"
+        "php-http/mock-client": "^1.4",
+        "symfony/http-client": "^5.3",
+        "guzzlehttp/guzzle": "^7.3"
     },
     "license": "MIT",
     "authors": [

@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use GuzzleHttp\Psr7\Response;
+use Nyholm\Psr7\Response;
 use Reflex\Challonge\DTO\Tournament;
 
 class TournamentTest extends BaseTestCase
@@ -47,7 +47,12 @@ class TournamentTest extends BaseTestCase
     {
         $this->mockHandler->append(new Response(200, [], file_get_contents(__DIR__ . '/stubs/tournament_fetch.json')));
 
-        $response = $this->challonge->fetchTournament('9044420');
+        $tournament = Tournament::fromResponse(
+            $this->challonge->getClient(),
+            json_decode(file_get_contents(__DIR__ . '/stubs/tournament_fetch.json'), true)['tournament']
+        );
+
+        $response = $tournament->delete();
 
         $this->assertEquals('challongephp test', $response->name);
     }

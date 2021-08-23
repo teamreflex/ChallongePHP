@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use GuzzleHttp\Psr7\Response;
+use Nyholm\Psr7\Response;
 use Reflex\Challonge\DTO\Participant;
 
 class ParticipantTest extends BaseTestCase

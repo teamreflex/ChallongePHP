@@ -64,7 +64,7 @@ class MatchDto extends DataTransferObject
      */
     public function update(array $options = []): MatchDto
     {
-        $response = $this->client->request('put', "tournaments/{$this->tournament_id}/matches/{$this->id}", $this->client->mapOptions($options, 'match'));
+        $response = $this->client->request('PUT', "tournaments/{$this->tournament_id}/matches/{$this->id}", $this->client->mapOptions($options, 'match'));
         return self::fromResponse($this->client, $response['match']);
     }
 
@@ -81,7 +81,7 @@ class MatchDto extends DataTransferObject
      */
     public function reopen(): MatchDto
     {
-        $response = $this->client->request('post', "tournaments/{$this->tournament_id}/matches/{$this->id}/reopen");
+        $response = $this->client->request('POST', "tournaments/{$this->tournament_id}/matches/{$this->id}/reopen");
         return self::fromResponse($this->client, $response['match']);
     }
 
@@ -98,7 +98,7 @@ class MatchDto extends DataTransferObject
      */
     public function markAsUnderway(): MatchDto
     {
-        $response = $this->client->request('post', "tournaments/{$this->tournament_id}/matches/{$this->id}/mark_as_underway");
+        $response = $this->client->request('POST', "tournaments/{$this->tournament_id}/matches/{$this->id}/mark_as_underway");
         return self::fromResponse($this->client, $response['match']);
     }
 
@@ -115,7 +115,7 @@ class MatchDto extends DataTransferObject
      */
     public function unmarkAsUnderway(): MatchDto
     {
-        $response = $this->client->request('post', "tournaments/{$this->tournament_id}/matches/{$this->id}/unmark_as_underway");
+        $response = $this->client->request('POST', "tournaments/{$this->tournament_id}/matches/{$this->id}/unmark_as_underway");
         return self::fromResponse($this->client, $response['match']);
     }
 }
