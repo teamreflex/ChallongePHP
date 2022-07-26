@@ -6,7 +6,7 @@
         "php": "^7.4 | ^8.0",
         "psr/http-client": "^1.0",
         "psr/log": "^1.1.4",
-        "illuminate/collections": "~8.0",
+        "illuminate/collections": "~9",
         "spatie/data-transfer-object": "^2.5",
         "nyholm/psr7": "^1.4"
     },
@@ -14,7 +14,7 @@
         "phpunit/phpunit": "^9.4",
         "php-http/mock-client": "^1.4",
         "symfony/http-client": "^5.3",
-        "guzzlehttp/guzzle": "^7.3"
+        "guzzlehttp/guzzle": "^7.4.5"
     },
     "license": "MIT",
     "authors": [
