@@ -14,7 +14,7 @@
         "phpunit/phpunit": "^9.4",
         "php-http/mock-client": "^1.4",
         "symfony/http-client": "^5.3",
-        "guzzlehttp/guzzle": "^7.3"
+        "guzzlehttp/guzzle": "^7.4"
     },
     "license": "MIT",
     "authors": [
