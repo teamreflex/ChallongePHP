@@ -59,7 +59,7 @@ class ClientWrapper
             $method,
             $base_uri,
             $this->buildHeaders(),
-            \http_build_query($content, '', '&'),
+            json_encode($content),
         );
         $response = $this->client->sendRequest($request);
 
@@ -74,7 +74,7 @@ class ClientWrapper
     {
         return [
             'Accept' => 'application/json',
-            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Content-Type' => 'application/json',
             'User-Agent' => "ChallongePHP/{$this->version} ChallongePHP (https://github.com/teamreflex/ChallongePHP, {$this->version})",
         ];
     }
@@ -151,6 +151,22 @@ class ClientWrapper
     public function setKey(string $key): void
     {
         $this->key = $key;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getMapOptions(): bool
+    {
+        return $this->mapOptions;
+    }
+
+    /**
+     * @param bool $mapOptions
+     */
+    public function setMapOptions(bool $mapOptions): void
+    {
+        $this->mapOptions = $mapOptions;
     }
 
     /**

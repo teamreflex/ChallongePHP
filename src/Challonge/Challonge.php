@@ -14,7 +14,7 @@ class Challonge
      * ChallongePHP version.
      * Required to pass into Challonge.
      */
-    protected string $version = '3.1';
+    protected string $version = '3.2';
 
     /**
      * PSR-18 compatible HTTP client wrapped in our wrapper.
