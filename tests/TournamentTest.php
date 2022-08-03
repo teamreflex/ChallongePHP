@@ -192,7 +192,10 @@ class TournamentTest extends BaseTestCase
             json_decode(file_get_contents(__DIR__ . '/stubs/tournament_fetch.json'), true)['tournament']
         );
 
-        $response = $tournament->bulkAddParticipant();
+        $response = $tournament->bulkAddParticipant([
+            ['name' => 'Team 1'],
+            ['name' => 'Team 2'],
+        ]);
 
         $this->assertCount(3, $response);
     }

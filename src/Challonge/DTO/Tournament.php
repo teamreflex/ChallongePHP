@@ -297,7 +297,14 @@ class Tournament extends DataTransferObject
      */
     public function bulkAddParticipant(array $options = []): Collection
     {
-        $response = $this->client->request('POST', "tournaments/{$this->id}/participants/bulk_add", $this->client->mapOptions($options, 'participant'));
+        // have to bypass the mapOptions function as the format is a bit different
+        if ($this->client->getMapOptions()) {
+            $options = [
+                'participants' => $options,
+            ];
+        }
+
+        $response = $this->client->request('POST', "tournaments/{$this->id}/participants/bulk_add", $options);
         return Collection::make($response)
             ->map(fn (array $participant) => Participant::fromResponse($this->client, $participant['participant']));
     }

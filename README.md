@@ -11,7 +11,7 @@ Refer to the table for PHP version compatibility:
 
 | ChallongePHP Ver. | Compatible PHP |
 |----------|-------------|
-| ^4.0 | 8.0 -8.1 |
+| ^4.0 | 8.0 - 8.1 |
 | ^3.0 | 7.4 - 8.0 |
 | ^2.1 | 7.4 |
 | ^2.0 | 7.4 |
@@ -68,6 +68,6 @@ As the package is fully type-hinted, everything should be self documenting, howe
 
 ## Contact
 - [@Reflexgg](http://twitter.com/Reflexgg)
-- [@Kairuxo](http://twitter.com/Kairuxo)
+- [@rfxkairu](http://twitter.com/rfxkairu)
 
 [Challonge]: <http://api.challonge.com/v1>
