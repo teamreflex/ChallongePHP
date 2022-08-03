@@ -40,6 +40,7 @@ class ClientWrapper
      * Make a request to Challonge via the HTTP client.
      * @param string $method
      * @param string $uri
+     * @param string $contenttype
      * @param array $content
      * @return array
      * @throws InvalidFormatException
@@ -51,15 +52,15 @@ class ClientWrapper
      * @throws ValidationException
      * @throws ClientExceptionInterface
      */
-    public function request(string $method, string $uri, array $content = []): array
+    public function request(string $method, string $uri, string $contenttype, array $content = []): array
     {
         $base_uri = "https://api.challonge.com/v1/{$uri}.json?api_key={$this->getKey()}";
 
         $request = new Request(
             $method,
             $base_uri,
-            $this->buildHeaders(),
-            json_encode($content),
+            $this->buildHeaders($contenttype),
+            ($contenttype == "json") ? json_encode($content) : \http_build_query($content, '', '&'),
         );
         $response = $this->client->sendRequest($request);
 
@@ -70,11 +71,11 @@ class ClientWrapper
      * Build any headers the requests need.
      * @return array
      */
-    protected function buildHeaders(): array
+    protected function buildHeaders(string $contenttype): array
     {
         return [
             'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
+            'Content-Type' => ($contenttype == "json") ? 'application/json' : 'application/x-www-form-urlencoded',
             'User-Agent' => "ChallongePHP/{$this->version} ChallongePHP (https://github.com/teamreflex/ChallongePHP, {$this->version})",
         ];
     }
