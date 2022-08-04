@@ -14,7 +14,7 @@ class Challonge
      * ChallongePHP version.
      * Required to pass into Challonge.
      */
-    protected string $version = '4.0';
+    protected string $version = '4.1';
 
     /**
      * PSR-18 compatible HTTP client wrapped in our wrapper.
@@ -53,7 +53,7 @@ class Challonge
      * @throws \JsonException
      */
     public function getTournaments(): Collection {
-        $response = $this->client->request('GET', 'tournaments');
+        $response = $this->client->request('GET', 'tournaments', 'form');
         return Collection::make($response)
             ->map(fn (array $tournament) => Tournament::fromResponse($this->client, $tournament['tournament']));
     }
@@ -72,7 +72,7 @@ class Challonge
      */
     public function createTournament(array $options = []): Tournament
     {
-        $response = $this->client->request('POST', 'tournaments', $this->client->mapOptions($options, 'tournament'));
+        $response = $this->client->request('POST', 'tournaments', 'form', $this->client->mapOptions($options, 'tournament'));
         return Tournament::fromResponse($this->client, $response['tournament']);
     }
 
@@ -90,7 +90,7 @@ class Challonge
      */
     public function fetchTournament(string $tournament): Tournament
     {
-        $response = $this->client->request('GET', "tournaments/{$tournament}");
+        $response = $this->client->request('GET', "tournaments/{$tournament}", 'form');
         return Tournament::fromResponse($this->client, $response['tournament']);
     }
 
@@ -108,7 +108,7 @@ class Challonge
      */
     public function deleteTournament(string $tournament): Tournament
     {
-        $response = $this->client->request('DELETE', "tournaments/{$tournament}");
+        $response = $this->client->request('DELETE', "tournaments/{$tournament}", 'form');
         return Tournament::fromResponse($this->client, $response['tournament']);
     }
 
@@ -126,7 +126,7 @@ class Challonge
      */
     public function getParticipants(string $tournament): Collection
     {
-        $response = $this->client->request('GET', "tournaments/{$tournament}/participants");
+        $response = $this->client->request('GET', "tournaments/{$tournament}/participants", 'form');
         return Collection::make($response)
             ->map(fn (array $participant) => Participant::fromResponse($this->client, $participant['participant']));
     }
@@ -145,7 +145,7 @@ class Challonge
      */
     public function randomizeParticipants(string $tournament): Collection
     {
-        $response = $this->client->request('POST', "tournaments/{$tournament}/participants/randomize");
+        $response = $this->client->request('POST', "tournaments/{$tournament}/participants/randomize", 'form');
         return Collection::make($response)
             ->map(fn (array $participant) => Participant::fromResponse($this->client, $participant['participant']));
     }
@@ -165,7 +165,7 @@ class Challonge
      */
     public function getParticipant(string $tournament, int $participant): Participant
     {
-        $response = $this->client->request('GET', "tournaments/{$tournament}/participants/{$participant}");
+        $response = $this->client->request('GET', "tournaments/{$tournament}/participants/{$participant}", 'form');
         return Participant::fromResponse($this->client, $response['participant']);
     }
 
@@ -183,7 +183,7 @@ class Challonge
      */
     public function getMatches(string $tournament): Collection
     {
-        $response = $this->client->request('GET', "tournaments/{$tournament}/matches");
+        $response = $this->client->request('GET', "tournaments/{$tournament}/matches", 'form');
         return Collection::make($response)
             ->map(fn (array $match) => MatchDto::fromResponse($this->client, $match['match']));
     }
@@ -203,7 +203,7 @@ class Challonge
      */
     public function getMatch(string $tournament, int $match): MatchDto
     {
-        $response = $this->client->request('GET', "tournaments/{$tournament}/matches/{$match}");
+        $response = $this->client->request('GET', "tournaments/{$tournament}/matches/{$match}", 'form');
         return MatchDto::fromResponse($this->client, $response['match']);
     }
 

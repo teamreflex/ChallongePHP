@@ -126,7 +126,7 @@ class Tournament extends DataTransferObject
             throw new AlreadyStartedException('Tournament is already underway.');
         }
 
-        $response = $this->client->request('POST', "tournaments/{$this->id}/start");
+        $response = $this->client->request('POST', "tournaments/{$this->id}/start", 'form');
         return self::fromResponse($this->client, $response['tournament']);
     }
 
@@ -148,7 +148,7 @@ class Tournament extends DataTransferObject
             throw new StillRunningException('Tournament is still running.');
         }
 
-        $response = $this->client->request('POST', "tournaments/{$this->id}/finalize");
+        $response = $this->client->request('POST', "tournaments/{$this->id}/finalize", 'form');
         return self::fromResponse($this->client, $response['tournament']);
     }
 
@@ -165,7 +165,7 @@ class Tournament extends DataTransferObject
      */
     public function reset(): Tournament
     {
-        $response = $this->client->request('POST', "tournaments/{$this->id}/reset");
+        $response = $this->client->request('POST', "tournaments/{$this->id}/reset", 'form');
         return self::fromResponse($this->client, $response['tournament']);
     }
 
@@ -183,7 +183,7 @@ class Tournament extends DataTransferObject
      */
     public function update(array $options = []): Tournament
     {
-        $response = $this->client->request('PUT', "tournaments/{$this->id}", $this->client->mapOptions($options, 'tournament'));
+        $response = $this->client->request('PUT', "tournaments/{$this->id}", 'form', $this->client->mapOptions($options, 'tournament'));
         return self::fromResponse($this->client, $response['tournament']);
     }
 
@@ -200,7 +200,7 @@ class Tournament extends DataTransferObject
      */
     public function delete(): Tournament
     {
-        $response = $this->client->request('DELETE', "tournaments/{$this->id}");
+        $response = $this->client->request('DELETE', "tournaments/{$this->id}", 'form');
         return self::fromResponse($this->client, $response['tournament']);
     }
 
@@ -217,7 +217,7 @@ class Tournament extends DataTransferObject
      */
     public function clear(): Tournament
     {
-        $response = $this->client->request('POST', "tournaments/{$this->id}/participants/clear");
+        $response = $this->client->request('POST', "tournaments/{$this->id}/participants/clear", 'form');
         return self::fromResponse($this->client, $response['tournament']);
     }
 
@@ -239,7 +239,7 @@ class Tournament extends DataTransferObject
             throw new AlreadyStartedException('Tournament is already underway.');
         }
 
-        $response = $this->client->request('POST', "tournaments/{$this->id}/process_check_ins");
+        $response = $this->client->request('POST', "tournaments/{$this->id}/process_check_ins", 'form');
         return self::fromResponse($this->client, $response['tournament']);
     }
 
@@ -261,7 +261,7 @@ class Tournament extends DataTransferObject
             throw new AlreadyStartedException('Tournament is already underway.');
         }
 
-        $response = $this->client->request('POST', "tournaments/{$this->id}/abort_check_in");
+        $response = $this->client->request('POST', "tournaments/{$this->id}/abort_check_in", 'form');
         return self::fromResponse($this->client, $response['tournament']);
     }
 
@@ -279,7 +279,7 @@ class Tournament extends DataTransferObject
      */
     public function addParticipant(array $options = []): Participant
     {
-        $response = $this->client->request('POST', "tournaments/{$this->id}/participants", $this->client->mapOptions($options, 'participant'));
+        $response = $this->client->request('POST', "tournaments/{$this->id}/participants", 'form', $this->client->mapOptions($options, 'participant'));
         return Participant::fromResponse($this->client, $response['participant']);
     }
 
@@ -304,7 +304,7 @@ class Tournament extends DataTransferObject
             ];
         }
 
-        $response = $this->client->request('POST', "tournaments/{$this->id}/participants/bulk_add", $options);
+        $response = $this->client->request('POST', "tournaments/{$this->id}/participants/bulk_add", 'json', $options);
         return Collection::make($response)
             ->map(fn (array $participant) => Participant::fromResponse($this->client, $participant['participant']));
     }
@@ -323,7 +323,7 @@ class Tournament extends DataTransferObject
      */
     public function deleteParticipant(int $id): Participant
     {
-        $response = $this->client->request('DELETE', "tournaments/{$this->id}/participants/{$id}");
+        $response = $this->client->request('DELETE', "tournaments/{$this->id}/participants/{$id}", 'form');
         return Participant::fromResponse($this->client, $response['participant']);
     }
 
@@ -342,7 +342,7 @@ class Tournament extends DataTransferObject
      */
     public function updateParticipant(int $id, array $options = []): Participant
     {
-        $response = $this->client->request('PUT', "tournaments/{$this->id}/participants/{$id}", $this->client->mapOptions($options, 'participant'));
+        $response = $this->client->request('PUT', "tournaments/{$this->id}/participants/{$id}", 'form', $this->client->mapOptions($options, 'participant'));
         return Participant::fromResponse($this->client, $response['participant']);
     }
 }
