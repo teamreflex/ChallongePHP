@@ -104,7 +104,7 @@ class Tournament extends DataTransferObject
     public bool $team_convertable;
     public bool $group_stages_were_started;
     public ?string $team_size_range;
-    public ?string $toxic;
+    public ?bool $toxic;
     public ?bool $use_new_style;
     public array $optional_display_data;
 
