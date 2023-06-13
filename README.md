@@ -11,6 +11,7 @@ Refer to the table for PHP version compatibility:
 
 | ChallongePHP Ver. | Compatible PHP |
 |----------|-------------|
+| ^5.0 | 8.1 - 8.2 |
 | ^4.0 | 8.0 - 8.1 |
 | ^3.0 | 7.4 - 8.0 |
 | ^2.1 | 7.4 |
